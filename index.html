@@ -1,17 +1,18 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>VIP 財富傳承與稅務導覽 App</title>
+<title>VIP 財富傳承與稅務導覽</title>
 <style>
-  /* 基礎尊榮深色主題 */
+  /* 基礎深色尊榮主題設定 */
   :root {
     --gold-light: #fcf6ba;
     --gold-main: #d4af37;
     --gold-dark: #aa771c;
     --bg-color: #080808;
     --card-bg: #141414;
+    --nav-bg: #111111;
   }
   
   body {
@@ -21,530 +22,429 @@
     margin: 0;
     padding: 0;
     -webkit-font-smoothing: antialiased;
-    padding-bottom: 40px;
+    padding-bottom: 90px;
   }
 
-  /* 1. 極致閃亮加大導覽標題：流沙金光暈特效 */
+  /* 1. 極致閃亮加大導覽標題 */
   .vip-header {
     text-align: center;
-    padding: 45px 20px 15px;
+    padding: 40px 20px 20px;
     background: linear-gradient(180deg, rgba(20,20,20,1) 0%, rgba(8,8,8,0) 100%);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    backdrop-filter: blur(10px);
   }
   
   .vip-title {
-    font-size: 34px;
+    font-size: 30px;
     font-weight: 900;
-    letter-spacing: 3px;
+    letter-spacing: 2px;
     margin: 0;
-    /* 流沙金漸層與動畫 */
     background: linear-gradient(to right, var(--gold-dark), var(--gold-light), var(--gold-main), var(--gold-light), var(--gold-dark));
     background-size: 200% auto;
     color: transparent;
     -webkit-background-clip: text;
     background-clip: text;
     animation: goldShine 4s linear infinite;
-    text-shadow: 0 0 30px rgba(252, 246, 186, 0.45);
+    text-shadow: 0 0 20px rgba(252, 246, 186, 0.4);
   }
 
   @keyframes goldShine {
     to { background-position: 200% center; }
   }
 
-  /* 2. 常駐搜尋欄 (Sticky) */
-  .search-container {
-    position: sticky;
-    top: 0;
-    z-index: 50;
-    background-color: rgba(8, 8, 8, 0.85);
-    padding: 15px 20px;
-    backdrop-filter: blur(15px);
-    border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+  /* 2. 頁面容器 */
+  .page-section { display: none; padding: 20px; animation: fadeIn 0.4s ease-out forwards; }
+  .page-section.active { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 
-  .search-input {
-    width: 100%;
-    padding: 15px 20px;
-    border-radius: 30px;
-    border: 1px solid rgba(212, 175, 55, 0.5);
-    background-color: rgba(0, 0, 0, 0.7);
+  .section-title {
     color: var(--gold-light);
-    font-size: 16px;
-    outline: none;
-    box-sizing: border-box;
-    box-shadow: 0 0 15px rgba(212, 175, 55, 0.15) inset;
-    transition: all 0.3s ease;
-  }
-
-  .search-input:focus {
-    border-color: var(--gold-light);
-    box-shadow: 0 0 20px rgba(252, 246, 186, 0.5);
-  }
-
-  /* 3. 精緻微矩形：雙排正方形網格佈局 */
-  .grid-container {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
-    padding: 20px;
-  }
-
-  .grid-item {
-    background-color: var(--card-bg);
-    border-radius: 18px;
-    border-top: 6px solid var(--gold-main); /* 上方粗邊框識別 */
-    text-decoration: none;
-    color: #fff;
+    font-size: 20px;
+    font-weight: bold;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+    padding-bottom: 10px;
+    margin-top: 10px;
+    margin-bottom: 20px;
     display: flex;
-    flex-direction: column;
-    padding: 18px;
-    aspect-ratio: 1 / 1; /* 完美正方形 */
-    position: relative;
+    align-items: center;
+  }
+  .section-title::before {
+    content: ''; display: inline-block; width: 5px; height: 20px;
+    background-color: var(--gold-main); margin-right: 10px; border-radius: 2px;
+  }
+
+  /* 3. 展開卡片 */
+  .accordion-item {
+    background-color: var(--card-bg);
+    border-radius: 12px;
+    margin-bottom: 15px;
+    border-left: 4px solid var(--gold-main);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
     overflow: hidden;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.8);
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
-
-  .grid-item:active {
-    transform: scale(0.95);
-  }
-
-  .cat-1 { border-top-color: #bf953f; } /* 綜所稅申報 */
-  .cat-2 { border-top-color: #e6c27a; } /* 稅務新時代 */
-  .cat-3 { border-top-color: #a67c00; } /* 家族傳承 */
-  .cat-tool { border-top-color: var(--gold-light); box-shadow: 0 0 20px rgba(252, 246, 186, 0.15); } /* 工具發光 */
-
-  .item-category {
-    font-size: 13px;
-    color: var(--gold-main);
-    font-weight: 800;
-    margin-bottom: 8px;
-    z-index: 2;
-  }
-
-  .item-title {
-    font-size: 17px;
-    font-weight: 900;
-    line-height: 1.4;
-    margin-bottom: 6px;
-    z-index: 2;
-  }
-
-  /* 隱藏內容供彈窗讀取 */
-  .hidden-data { display: none; }
-
-  /* 4. 大型數字標籤 (App 浮水印設計) */
-  .item-number {
-    position: absolute;
-    bottom: -15px;
-    right: -5px;
-    font-size: 80px;
-    font-weight: 900;
-    color: rgba(255, 255, 255, 0.03);
-    line-height: 1;
-    font-style: italic;
-    z-index: 1;
-    pointer-events: none;
-  }
-
-  /* 5. 原生 App 級別底部彈窗 (Bottom Sheet Modal) */
-  .modal-overlay {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(8px);
-    z-index: 999;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
-  }
-  .modal-overlay.active {
-    opacity: 1; pointer-events: auto;
-  }
-
-  .app-modal {
-    position: fixed; bottom: 0; left: 0; width: 100%; height: 82vh;
-    background: #171717;
-    border-radius: 28px 28px 0 0;
-    z-index: 1000;
-    transform: translateY(100%);
-    transition: transform 0.4s cubic-bezier(0.1, 0.8, 0.2, 1);
-    display: flex; flex-direction: column;
-    box-shadow: 0 -10px 40px rgba(0,0,0,0.8);
-  }
-  .app-modal.active {
-    transform: translateY(0);
-  }
-
-  .modal-handle {
-    width: 40px; height: 5px;
-    background: #444; border-radius: 10px;
-    margin: 15px auto;
-  }
-
-  .modal-content-area {
-    padding: 0 25px 30px;
-    overflow-y: auto;
-    flex: 1;
-  }
-
-  .modal-cat { color: var(--gold-main); font-size: 14px; font-weight: bold; margin-bottom: 5px; }
-  .modal-title { font-size: 24px; font-weight: 900; color: #fff; margin-top: 0; margin-bottom: 20px; line-height: 1.3;}
   
-  .modal-core {
-    color: #cccccc; font-size: 15px; line-height: 1.7; margin-bottom: 20px;
+  .cat-1 { border-left-color: #bf953f; }
+  .cat-2 { border-left-color: #e6c27a; }
+  .cat-3 { border-left-color: #a67c00; }
+
+  .accordion-header {
+    padding: 18px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+  }
+  
+  .icon-cross { color: var(--gold-main); font-size: 22px; transition: transform 0.3s ease; }
+
+  .accordion-content {
+    max-height: 0;
+    padding: 0 20px;
+    color: #cccccc;
+    font-size: 14px;
+    line-height: 1.6;
+    overflow: hidden;
+    transition: all 0.4s ease;
+    background-color: rgba(0,0,0,0.3);
   }
 
+  .accordion-item.open .accordion-content {
+    max-height: 1000px;
+    padding: 15px 20px 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  .accordion-item.open .icon-cross { transform: rotate(45deg); }
+
+  /* 案例與連結樣式 */
   .case-box {
     background: rgba(212, 175, 55, 0.08);
-    border-left: 4px solid var(--gold-light);
-    padding: 15px;
-    border-radius: 8px;
+    border-left: 3px solid var(--gold-light);
+    padding: 10px 15px;
+    margin: 10px 0;
+    border-radius: 4px;
     color: #fff;
-    margin-bottom: 25px;
   }
-  .case-title { color: var(--gold-light); font-weight: 900; margin-bottom: 8px; font-size: 16px;}
-  .case-text { font-size: 14px; line-height: 1.6; color: #e0e0e0; }
-
+  .case-title { color: var(--gold-light); font-weight: bold; margin-bottom: 5px; }
+  
   .story-link {
-    display: block; text-align: center;
+    display: inline-block;
+    margin-top: 10px;
+    color: #4da6ff;
+    text-decoration: none;
+    font-weight: bold;
     background: rgba(77, 166, 255, 0.1);
-    color: #4da6ff; text-decoration: none;
-    font-weight: bold; font-size: 16px;
-    padding: 15px; border-radius: 16px;
-    border: 1px solid rgba(77, 166, 255, 0.3);
+    padding: 6px 12px;
+    border-radius: 20px;
     transition: background 0.3s;
   }
-  .story-link:active { background: rgba(77, 166, 255, 0.25); }
+  .story-link:hover { background: rgba(77, 166, 255, 0.2); }
 
+  /* 4. 第四頁專屬按鈕 */
+  .calc-button {
+    display: block; width: 100%; text-align: center;
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold-main));
+    color: #000; font-size: 18px; font-weight: 900;
+    padding: 20px; border-radius: 16px; text-decoration: none;
+    margin-top: 40px; box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+  }
+
+  /* 5. 底部導覽列 */
+  .bottom-nav {
+    position: fixed; bottom: 0; width: 100%;
+    background-color: rgba(17, 17, 17, 0.95);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(212, 175, 55, 0.2);
+    display: flex; justify-content: space-around;
+    padding: 12px 0 20px; z-index: 1000;
+  }
+
+  .nav-item {
+    color: #666; text-align: center; font-size: 13px; font-weight: bold;
+    flex: 1; cursor: pointer; transition: color 0.3s ease;
+  }
+  .nav-item .nav-icon { font-size: 22px; margin-bottom: 4px; display: block; }
+  .nav-item.active { color: var(--gold-main); text-shadow: 0 0 10px rgba(212, 175, 55, 0.5); }
 </style>
 </head>
 <body>
 
-  <!-- VIP 極致光暈標題 -->
   <header class="vip-header">
-    <h1 class="vip-title">財富傳承與稅務導覽</h1>
+    <h1 class="vip-title">VIP 稅務與傳承</h1>
   </header>
 
-  <!-- 常駐搜尋欄 -->
-  <div class="search-container">
-    <input type="text" id="searchInput" class="search-input" placeholder="搜尋關鍵字 (例：稅、信託、海外)...">
-  </div>
-
-  <!-- 雙排正方形網格清單 -->
-  <main class="grid-container" id="gridContainer">
+  <!-- === 頁面 1: 綜所稅申報 === -->
+  <main id="page1" class="page-section active">
     
-    <!-- 01 -->
-    <div class="grid-item cat-1" onclick="openModal(this)">
-      <div class="item-category">1. 綜所稅申報</div>
-      <div class="item-title">個人 CFC 所得申報</div>
-      <div class="item-number">01</div>
-      <div class="hidden-data">
-        <div class="d-cat">1. 綜所稅申報 (所得/海外/不動產)</div>
-        <div class="d-title">個人 CFC 所得申報</div>
-        <div class="d-core">【規範精華】CFC盈餘達700萬須申報。若信託孳息受益人比例未明定，須按「人數平均」推算受益比例申報，以免漏報受罰[1, 2]。</div>
-        <div class="d-case">甲將BVI公司股權交付信託，約定4名子女依績效分配。當年盈餘9000萬，大兒子實拿20%(1800萬)，但因合約未定死比例，報稅須依法按4人平分(25%)申報2250萬營利所得，多繳稅無法退[3, 4]。</div>
-        <div class="d-link">https://www.google.com/search?q=CFC+信託+課稅+實際案例+補稅</div>
-        <div class="d-link-text">🔗 查閱 CFC 信託實務補稅案例</div>
+    <div class="section-title">1. 所得/海外/不動產</div>
+    
+    <div class="accordion-item cat-1" onclick="toggleAccordion(this)">
+      <div class="accordion-header">個人 CFC 所得申報 <span class="icon-cross">+</span></div>
+      <div class="accordion-content">
+        【核心規範】CFC盈餘達700萬須申報。若信託孳息受益人比例未明定，須按「人數平均」推算受益比例申報，以免漏報受罰。<br>
+        <div class="case-box">
+          <div class="case-title">📂 案例說明：</div>
+          甲將BVI公司100%股權交付信託，約定4名子女為受益人並依「績效」分配。當年CFC盈餘9000萬，大兒子績效普通僅實拿20%(1800萬)，但因合約未定死比例，報稅時須依法按4人平分(25%)，申報2250萬CFC營利所得，多繳稅也無法退稅 [1, 2]。
+        </div>
+        <a href="https://www.google.com/search?q=CFC+信託+課稅+實際案例+補稅" target="_blank" class="story-link">🔗 查閱 CFC 信託實務補稅案例</a>
       </div>
     </div>
 
-    <!-- 02 -->
-    <div class="grid-item cat-1" onclick="openModal(this)">
-      <div class="item-category">1. 綜所稅申報</div>
-      <div class="item-title">海外房產資金回台</div>
-      <div class="item-number">02</div>
-      <div class="hidden-data">
-        <div class="d-cat">1. 綜所稅申報 (所得/海外/不動產)</div>
-        <div class="d-title">海外房產資金回台</div>
-        <div class="d-core">【規範精華】處分海外房產資金匯回，須申報財產交易所得。若無法提出原始取得成本證明，依法按成交價額之 12% 計算所得額[5]。</div>
-        <div class="d-case">陳小姐於2005年購入香港房產，2024年以新台幣4960萬出售並匯回。因年代久遠單據遺失，國稅局按12%計算所得為595.2萬，併入最低稅負制課稅。若事後被查獲有更低成本單據卻未報，將面臨重罰[6]。</div>
-        <div class="d-link">https://www.google.com/search?q=海外房產+資金匯回+無法舉證成本+補稅</div>
-        <div class="d-link-text">🔗 查閱海外房產資金回台查核案例</div>
+    <div class="accordion-item cat-1" onclick="toggleAccordion(this)">
+      <div class="accordion-header">海外房產資金回台 <span class="icon-cross">+</span></div>
+      <div class="accordion-content">
+        【核心規範】處分海外房產資金匯回，須申報財產交易所得。若無法提出原始取得成本證明，依法按成交價額之 12% 計算所得額。<br>
+        <div class="case-box">
+          <div class="case-title">📂 案例說明：</div>
+          陳小姐於2005年購入香港房產，2024年以新台幣4960萬出售並匯回台灣。因年代久遠單據遺失，國稅局按12%計算所得為595.2萬，併入最低稅負制計算基本稅額。若事後被查獲有更低成本的單據卻未報，將面臨重罰 [3]。
+        </div>
+        <a href="https://www.google.com/search?q=海外房產+資金匯回+無法舉證成本+補稅" target="_blank" class="story-link">🔗 查閱海外房產資金回台查核案例</a>
       </div>
     </div>
 
-    <!-- 03 -->
-    <div class="grid-item cat-1" onclick="openModal(this)">
-      <div class="item-category">1. 綜所稅申報</div>
-      <div class="item-title">外籍人士不動產課稅</div>
-      <div class="item-number">03</div>
-      <div class="hidden-data">
-        <div class="d-cat">1. 綜所稅申報 (所得/海外/不動產)</div>
-        <div class="d-title">外籍人士不動產課稅</div>
-        <div class="d-core">【規範精華】外籍人士買賣台灣不動產須符合「互惠原則」。適用房地合一稅2.0，境外法人短期持有(2年內)出售稅率高達45%[7, 8]。</div>
-        <div class="d-case">外資設立開曼公司花1億元購入台北商辦，持有一年半後以3億元售出。因屬境外法人且持有未滿2年，直接面臨45%重稅（近9000萬）。若當初設立「國內投資公司」間接持有並長期規劃，稅負將大幅降低[9, 10]。</div>
-        <div class="d-link">https://www.google.com/search?q=外資+台灣不動產+房地合一稅+45%25</div>
-        <div class="d-link-text">🔗 查閱外資炒房課重稅新聞</div>
+    <div class="accordion-item cat-1" onclick="toggleAccordion(this)">
+      <div class="accordion-header">外籍人士不動產課稅 <span class="icon-cross">+</span></div>
+      <div class="accordion-content">
+        【核心規範】外籍人士買賣台灣不動產須符合「互惠原則」。適用房地合一稅2.0，境外法人短期持有(2年內)出售稅率高達45%。<br>
+        <div class="case-box">
+          <div class="case-title">📂 案例說明：</div>
+          外資全資設立開曼公司，花1億元購入台北商辦，持有一年半後以3億元售出。因屬境外法人且持有未滿2年，直接面臨45%重稅（需繳近9000萬）。若當初設立「國內投資公司」間接持有並長期規劃，整體稅負將大幅降低 [4]。
+        </div>
+        <a href="https://www.google.com/search?q=外資+台灣不動產+房地合一稅+45%25" target="_blank" class="story-link">🔗 查閱外資炒房課重稅新聞</a>
       </div>
     </div>
 
-    <!-- 04 -->
-    <div class="grid-item cat-1" onclick="openModal(this)">
-      <div class="item-category">1. 綜所稅申報</div>
-      <div class="item-title">自用住宅重購退稅</div>
-      <div class="item-number">04</div>
-      <div class="hidden-data">
-        <div class="d-cat">1. 綜所稅申報 (所得/海外/不動產)</div>
-        <div class="d-title">舊制自用住宅重購退稅</div>
-        <div class="d-core">【規範精華】納稅義務人列報扶養之未成年子女出售自用住宅，自移轉日起2年內由「同一」子女重購較高價的自用住宅，得退抵綜合所得稅[11, 12]。</div>
-        <div class="d-case">父親將舊制公寓贈與16歲兒子。兒子出售該公寓後，於1年半內以自己名義買下總價更高的透天厝。因均屬「同一未成年子女」名下，父親申報綜所稅時，可依法扣抵或退還該筆財產交易所得稅[11]。</div>
-        <div class="d-link">https://www.google.com/search?q=未成年子女+重購退稅+財政部+新令</div>
-        <div class="d-link-text">🔗 查閱未成年子女重購退稅案例</div>
+    <div class="accordion-item cat-1" onclick="toggleAccordion(this)">
+      <div class="accordion-header">舊制自用住宅重購退稅 <span class="icon-cross">+</span></div>
+      <div class="accordion-content">
+        【核心規範】納稅義務人列報扶養之未成年子女出售自用住宅，自移轉日起2年內由「同一」子女重購較高價的自用住宅，得適用重購退抵稅額。<br>
+        <div class="case-box">
+          <div class="case-title">📂 案例說明：</div>
+          父親將名下舊制公寓贈與16歲兒子。兒子隔年出售該公寓，並於1年半後以自己名義買下另一間總價更高的透天厝自住。因均屬「同一未成年子女」名下，父親申報綜所稅時，可依法扣抵或退還該筆財產交易所得稅 [5]。
+        </div>
+        <a href="https://www.google.com/search?q=未成年子女+重購退稅+財政部+新令" target="_blank" class="story-link">🔗 查閱未成年子女重購退稅案例</a>
       </div>
     </div>
 
-    <!-- 05 -->
-    <div class="grid-item cat-1" onclick="openModal(this)">
-      <div class="item-category">1. 綜所稅申報</div>
-      <div class="item-title">免稅額與扣除額調高</div>
-      <div class="item-number">05</div>
-      <div class="hidden-data">
-        <div class="d-cat">1. 綜所稅申報 (扣除/申報)</div>
-        <div class="d-title">免稅額與扣除額調高</div>
-        <div class="d-core">【規範精華】114年度基本生活費調高至21.3萬；長照扣除額調高至18萬；租金支出改列特別扣除額；幼兒扣除額擴大至6歲且取消排富[13, 14]。</div>
-        <div class="d-case">甲君為單薪家庭，扶養2名大學生與2名父母。依114年新制，全戶基本生活費為127.8萬。扣除免稅額與標準扣除額後，甲君可額外獲得37.4萬的「基本生活費差額」自所得總額中減除，大幅降低應納稅額[14, 15]。</div>
-        <div class="d-link">https://www.google.com/search?q=114年+基本生活費調高+報稅+節稅案例</div>
-        <div class="d-link-text">🔗 查閱基本生活費調高節稅報導</div>
+    <div class="section-title">2. 扣除/申報</div>
+
+    <div class="accordion-item cat-1" onclick="toggleAccordion(this)">
+      <div class="accordion-header">免稅額與扣除額調高 <span class="icon-cross">+</span></div>
+      <div class="accordion-content">
+        【核心規範】114年度基本生活費調高至21.3萬；長照扣除額調高至18萬；租金支出改列特別扣除額；幼兒扣除額擴大至6歲且取消排富。<br>
+        <div class="case-box">
+          <div class="case-title">📂 案例說明：</div>
+          甲君為單薪家庭，扶養2名大學生與2名父母（共6人）。依114年新制，全戶基本生活費為127.8萬。扣除免稅額與標準扣除額後，甲君可額外獲得37.4萬的「基本生活費差額」自所得總額中減除，大幅降低應納稅額 [6, 7]。
+        </div>
+        <a href="https://www.google.com/search?q=114年+基本生活費調高+報稅+節稅案例" target="_blank" class="story-link">🔗 查閱基本生活費調高節稅報導</a>
       </div>
     </div>
 
-    <!-- 06 -->
-    <div class="grid-item cat-1" onclick="openModal(this)">
-      <div class="item-category">1. 綜所稅申報</div>
-      <div class="item-title">綜所稅申報 SOP</div>
-      <div class="item-number">06</div>
-      <div class="hidden-data">
-        <div class="d-cat">1. 綜所稅申報 (扣除/申報)</div>
-        <div class="d-title">綜所稅申報 SOP</div>
-        <div class="d-core">【規範精華】單身所得低於22.8萬可免申報。手機報稅4.0支援編修功能，附件上傳總容量提升至15MB[16, 17]。</div>
-        <div class="d-case">社會新鮮人小林去年薪資僅20萬，依法可免辦結算申報。而台商王總因醫療與捐贈收據繁多，今年使用「手機報稅4.0」，直接用手機拍照上傳高達15MB的附件並修改扣除額，無須再親跑國稅局遞交紙本[16, 17]。</div>
-        <div class="d-link">https://www.google.com/search?q=手機報稅4.0+附件上傳+免臨櫃</div>
-        <div class="d-link-text">🔗 查閱手機報稅 4.0 操作新聞</div>
+    <div class="accordion-item cat-1" onclick="toggleAccordion(this)">
+      <div class="accordion-header">綜所稅申報 SOP <span class="icon-cross">+</span></div>
+      <div class="accordion-content">
+        【核心規範】單身所得低於22.8萬可免申報。手機報稅4.0支援編修功能，附件上傳總容量提升至15MB。<br>
+        <div class="case-box">
+          <div class="case-title">📂 案例說明：</div>
+          社會新鮮人小林去年薪資僅20萬，依法可免辦結算申報。而台商王總因醫療與捐贈收據繁多，今年使用「手機報稅4.0」，直接用手機拍照上傳高達15MB的附件並修改扣除額，無須再親跑國稅局遞交紙本單據 [8]。
+        </div>
+        <a href="https://www.google.com/search?q=手機報稅4.0+附件上傳+免臨櫃" target="_blank" class="story-link">🔗 查閱手機報稅 4.0 實務操作新聞</a>
       </div>
-    </div>
-
-    <!-- 07 -->
-    <div class="grid-item cat-2" onclick="openModal(this)">
-      <div class="item-category">2. 稅務新時代</div>
-      <div class="item-title">高爾夫會員證稅務</div>
-      <div class="item-number">07</div>
-      <div class="hidden-data">
-        <div class="d-cat">2. 稅務新時代</div>
-        <div class="d-title">高爾夫球會員證稅務</div>
-        <div class="d-core">【規範精華】高爾夫球會員證屬財產交易，無論出售、贈與或繼承，均須以「市價」為基準申報，勿以公司帳面淨值低估[18]。</div>
-        <div class="d-case">甲先生將某育樂公司股票（兼具高爾夫球會員資格）贈與兒子。甲先生以公司「每股淨值60萬」申報，但國稅局查出該會員證市場行情達320萬，認定屬不相當代價移轉，當場補徵7.6萬贈與稅並加計利息[18, 19]。</div>
-        <div class="d-link">https://www.google.com/search?q=高爾夫球會員證+贈與稅+市價+補稅</div>
-        <div class="d-link-text">🔗 查閱高爾夫會員證逃漏稅案例</div>
-      </div>
-    </div>
-
-    <!-- 08 -->
-    <div class="grid-item cat-2" onclick="openModal(this)">
-      <div class="item-category">2. 稅務新時代</div>
-      <div class="item-title">頂客單身族繼承</div>
-      <div class="item-number">08</div>
-      <div class="hidden-data">
-        <div class="d-cat">2. 稅務新時代</div>
-        <div class="d-title">頂客與單身族遺產繼承</div>
-        <div class="d-core">【規範精華】單身族若無子女與父母，遺產將依法由兄弟姊妹繼承。若想留給非親屬，需透過保險或信託對抗「特留分」[20, 21]。</div>
-        <div class="d-case">知名單身藝人猝逝，生前曾表示不願將遺產給疏遠的兄長，想全給照顧她的乾兒子。但因未妥善規劃，依法兄長仍能主張「特留分」分產。若生前將乾兒子列為人壽保險受益人，便能合法隔離資產[20, 22]。</div>
-        <div class="d-link">https://www.google.com/search?q=單身藝人+遺產繼承+特留分+兄弟姊妹</div>
-        <div class="d-link-text">🔗 查閱單身藝人遺產特留分新聞</div>
-      </div>
-    </div>
-
-    <!-- 09 -->
-    <div class="grid-item cat-2" onclick="openModal(this)">
-      <div class="item-category">2. 稅務新時代</div>
-      <div class="item-title">國內生前信託課稅</div>
-      <div class="item-number">09</div>
-      <div class="hidden-data">
-        <div class="d-cat">2. 稅務新時代</div>
-        <div class="d-title">國內生前信託課稅</div>
-        <div class="d-core">【規範精華】生前信託可達資產隔離。若為「他益信託」且不保留變更權，設立時即課贈與稅，未來獲利課受益人所得稅[23, 24]。</div>
-        <div class="d-case">富商擔心猝逝後遺產會被離異前妻以「監護人」身分掌控。他生前設立「他益信託」，約定資產由銀行代管，待子女滿25歲後分期領取。此舉保障了子女生活，也成功隔離了前妻的干預[23]。</div>
-        <div class="d-link">https://www.google.com/search?q=名人+猝逝+生前信託+防前妻</div>
-        <div class="d-link-text">🔗 查閱生前信託防產權外流案例</div>
-      </div>
-    </div>
-
-    <!-- 10 -->
-    <div class="grid-item cat-2" onclick="openModal(this)">
-      <div class="item-category">2. 稅務新時代</div>
-      <div class="item-title">扶養親屬列報實務</div>
-      <div class="item-number">10</div>
-      <div class="hidden-data">
-        <div class="d-cat">2. 稅務新時代</div>
-        <div class="d-title">扶養親屬列報實務</div>
-        <div class="d-core">【規範精華】同一直系尊親屬僅能由一人列報扶養。若重複申報且無協議，國稅局將依「實際扶養事實」認定[25, 26]。</div>
-        <div class="d-case">兄弟兩人都把母親報在自己的綜所稅裡。由於兩人不願妥協，國稅局調查「實際扶養事實」。經查母親實際與弟弟同住滿300天，且醫療與長照費用均由弟弟扣款，最終判定免稅額歸屬弟弟，哥哥遭補稅[26]。</div>
-        <div class="d-link">https://www.google.com/search?q=綜所稅+重複申報扶養父母+實際扶養事實</div>
-        <div class="d-link-text">🔗 查閱兄弟爭報扶養遭補稅案例</div>
-      </div>
-    </div>
-
-    <!-- 11 -->
-    <div class="grid-item cat-3" onclick="openModal(this)">
-      <div class="item-category">3. 家族傳承策略</div>
-      <div class="item-title">遺產稅實物抵繳</div>
-      <div class="item-number">11</div>
-      <div class="hidden-data">
-        <div class="d-cat">3. 家族傳承策略</div>
-        <div class="d-title">遺產稅實物抵繳</div>
-        <div class="d-core">【規範精華】應納遺產稅達30萬且「現金繳納有困難」得申請實物抵繳。若被繼承人遺留現金大於稅款，國稅局將駁回[27, 28]。</div>
-        <div class="d-case">老董事長過世，遺產含1000萬土地與2億存款，應納稅額為3211萬。繼承人想用土地「實物抵繳」。但國稅局認定帳戶有2億現金「並無繳現困難」，駁回申請。若存款僅500萬，則可合法用土地抵繳[29]。</div>
-        <div class="d-link">https://www.google.com/search?q=遺產稅+實物抵繳+駁回+無繳現困難</div>
-        <div class="d-link-text">🔗 查閱遺產稅實物抵繳遭拒判例</div>
-      </div>
-    </div>
-
-    <!-- 12 -->
-    <div class="grid-item cat-3" onclick="openModal(this)">
-      <div class="item-category">3. 家族傳承策略</div>
-      <div class="item-title">擬制遺產課稅</div>
-      <div class="item-number">12</div>
-      <div class="hidden-data">
-        <div class="d-cat">3. 家族傳承策略</div>
-        <div class="d-title">擬制遺產課稅</div>
-        <div class="d-core">【規範精華】死亡前2年內贈與配偶財產應併計遺產。依114年新制，該財產視為現存，配偶仍可主張剩餘財產分配請求權[30, 31]。</div>
-        <div class="d-case">好野君過世前半年匯款5億給妻子。這5億依法被國稅局「擬制」算作遺產。但依據憲法法庭判決與最新處理原則，妻子仍可將這5億列入計算，行使剩餘財產分配請求權，大幅抵減了天價遺產稅[32, 33]。</div>
-        <div class="d-link">https://www.google.com/search?q=憲法法庭+死亡前二年贈與配偶+遺產稅</div>
-        <div class="d-link-text">🔗 查閱死亡前贈與配偶釋憲報導</div>
-      </div>
-    </div>
-
-    <!-- 13 -->
-    <div class="grid-item cat-3" onclick="openModal(this)">
-      <div class="item-category">3. 家族傳承策略</div>
-      <div class="item-title">全球設籍稅務注意</div>
-      <div class="item-number">13</div>
-      <div class="hidden-data">
-        <div class="d-cat">3. 家族傳承策略</div>
-        <div class="d-title">全球設籍稅務注意</div>
-        <div class="d-core">【規範精華】家族二代長居海外將面臨 CRS 資訊交換透明化，跨國繼承時極易面臨兩國雙重課徵遺產稅[34, 35]。</div>
-        <div class="d-case">富豪兒子早年取得美國綠卡定居加州。富豪在台過世後，兒子不僅繳台灣遺產稅，還必須向美國 IRS 申報龐大遺產。因台灣能扣抵的海外稅額設有上限，最終導致嚴重的雙重課稅損失[35, 36]。</div>
-        <div class="d-link">https://www.google.com/search?q=美國籍+台灣繼承遺產+雙重課稅</div>
-        <div class="d-link-text">🔗 查閱台美雙重國籍遺產稅案例</div>
-      </div>
-    </div>
-
-    <!-- 14 -->
-    <div class="grid-item cat-3" onclick="openModal(this)">
-      <div class="item-category">3. 家族傳承策略</div>
-      <div class="item-title">代際傳承保險工具</div>
-      <div class="item-number">14</div>
-      <div class="hidden-data">
-        <div class="d-cat">3. 家族傳承策略</div>
-        <div class="d-title">代際傳承保險工具</div>
-        <div class="d-core">【規範精華】保險指定受益人原則免計遺產。高資產族常規劃「三代保單」，達到傳承、預留稅源與免計基本所得效益[37, 38]。</div>
-        <div class="d-case">爺爺規劃「三代保單」：自己出錢，以兒子為被保險人，孫子為受益人。兒子過世時，孫子獲賠千萬。此理賠金不計入兒子遺產；且只要全戶死亡給付低於3740萬，孫子連基本所得稅都不用繳[38, 39]。</div>
-        <div class="d-link">https://www.google.com/search?q=三代保單+財富傳承+節稅案例</div>
-        <div class="d-link-text">🔗 查閱三代保單傳承實務解析</div>
-      </div>
-    </div>
-
-    <!-- 15 -->
-    <div class="grid-item cat-3" onclick="openModal(this)">
-      <div class="item-category">3. 家族傳承策略</div>
-      <div class="item-title">資產保全企業永續</div>
-      <div class="item-number">15</div>
-      <div class="hidden-data">
-        <div class="d-cat">3. 家族傳承策略</div>
-        <div class="d-title">資產保全與企業永續</div>
-        <div class="d-core">【規範精華】為防後代爭產與股權外流，應將信託、閉鎖性公司、保險與遺囑等多管齊下，構築不可撼動的傳承防護網[40, 41]。</div>
-        <div class="d-case">某老牌製造廠為防二代爭產，成立「閉鎖性公司」持有集團所有股權，章程嚴格限制股份轉讓，並發行「黃金否決權」特別股給長子。同時輔以家族憲章，確保家族資產不因婚姻而外流[40, 42]。</div>
-        <div class="d-link">https://www.google.com/search?q=閉鎖性公司+家族傳承+特別股+案例</div>
-        <div class="d-link-text">🔗 查閱閉鎖性公司鞏固經營權案例</div>
-      </div>
-    </div>
-
-    <!-- 16 -->
-    <div class="grid-item cat-3" onclick="openModal(this)">
-      <div class="item-category">3. 家族傳承策略</div>
-      <div class="item-title">家族辦公室全解析</div>
-      <div class="item-number">16</div>
-      <div class="hidden-data">
-        <div class="d-cat">3. 家族傳承策略</div>
-        <div class="d-title">家族辦公室全解析</div>
-        <div class="d-core">【規範精華】家族辦公室面臨專業人才短缺，應從「獵才」轉向「育才」，並賦予專業經理人「共同投資權」以深化歸屬感[43, 44]。</div>
-        <div class="d-case">傳產大亨設立「單一家族辦公室」，聘請頂尖投資長代管百億資金。為防高階人才跳槽，大亨在治理機制中加入「共同投資權」，讓投資長以自有資金與家族按比例入股，成功把外人變為利益共同的家人[44, 45]。</div>
-        <div class="d-link">https://www.google.com/search?q=家族辦公室+專業經理人+共同投資權</div>
-        <div class="d-link-text">🔗 查閱家族辦公室留才與投資案例</div>
-      </div>
-    </div>
-
-    <!-- 17: 實用工具直接另開連結 -->
-    <div class="grid-item cat-tool" onclick="window.open('http://tax.nat.gov.tw', '_blank')">
-      <div class="item-category">實用工具</div>
-      <div class="item-title">報稅試算表 (國稅局)</div>
-      <div class="item-number">17</div>
-      <div style="font-size: 13px; color: #a0a0a0; margin-top: 5px; line-height: 1.4;">點擊直接前往國稅局網站，進行線上申報。</div>
     </div>
 
   </main>
 
-  <!-- 遮罩與底部彈窗 -->
-  <div class="modal-overlay" id="modalOverlay" onclick="closeModal()"></div>
-  <div class="app-modal" id="appModal">
-    <div class="modal-handle" onclick="closeModal()"></div>
-    <div class="modal-content-area">
-      <div class="modal-cat" id="mCat"></div>
-      <h2 class="modal-title" id="mTitle"></h2>
-      <div class="modal-core" id="mCore"></div>
-      
-      <div class="case-box">
-        <div class="case-title">📂 案例說明：</div>
-        <div class="case-text" id="mCase"></div>
-      </div>
 
-      <a href="#" target="_blank" class="story-link" id="mLinkText"></a>
+  <!-- === 頁面 2: 稅務新時代 === -->
+  <main id="page2" class="page-section">
+    
+    <div class="section-title">稅務新時代關鍵議題</div>
+
+    <div class="accordion-item cat-2" onclick="toggleAccordion(this)">
+      <div class="accordion-header">高爾夫球會員證稅務 <span class="icon-cross">+</span></div>
+      <div class="accordion-content">
+        【核心規範】高爾夫球會員證屬財產交易，無論出售、贈與或繼承，均須以「市價」為基準申報，勿以公司帳面淨值低估。<br>
+        <div class="case-box">
+          <div class="case-title">📂 案例說明：</div>
+          甲先生將某育樂公司股票（兼具高爾夫球會員資格）贈與兒子。甲先生以公司「每股淨值60萬」申報，但國稅局查出該會員證市場行情高達320萬，認定屬不相當代價移轉，當場補徵7.6萬贈與稅並加計利息 [9]。
+        </div>
+        <a href="https://www.google.com/search?q=高爾夫球會員證+贈與稅+市價+補稅" target="_blank" class="story-link">🔗 查閱高爾夫會員證逃漏稅案例</a>
+      </div>
     </div>
-  </div>
+
+    <div class="accordion-item cat-2" onclick="toggleAccordion(this)">
+      <div class="accordion-header">頂客與單身族遺產繼承 <span class="icon-cross">+</span></div>
+      <div class="accordion-content">
+        【核心規範】單身族若無子女與父母，遺產將100%由兄弟姊妹繼承。若想留給非親屬，需透過保險或信託對抗「特留分」。<br>
+        <div class="case-box">
+          <div class="case-title">📂 案例說明：</div>
+          某知名單身資深藝人猝逝，生前曾公開表示不願將上億遺產留給疏遠的兄長，想全給照顧她的乾兒子。但因未妥善規劃，依法兄長仍能主張「特留分」強勢分產。若生前將乾兒子列為人壽保險受益人，便能合法隔離這筆資產 [10]。
+        </div>
+        <a href="https://www.google.com/search?q=單身藝人+遺產繼承+特留分+兄弟姊妹" target="_blank" class="story-link">🔗 查閱單身藝人遺產特留分新聞</a>
+      </div>
+    </div>
+
+    <div class="accordion-item cat-2" onclick="toggleAccordion(this)">
+      <div class="accordion-header">國內生前信託課稅 <span class="icon-cross">+</span></div>
+      <div class="accordion-content">
+        【核心規範】生前信託可達到資產隔離。若為「他益信託」且不保留變更權，設立時即課贈與稅，未來獲利課受益人所得稅。<br>
+        <div class="case-box">
+          <div class="case-title">📂 案例說明：</div>
+          某富商擔心自己猝逝後，龐大遺產會被離異的前妻以「未成年子女監護人」身分掌控揮霍。他生前設立了「他益信託」，約定資產由銀行代管，待子女滿25歲後分期領取。此舉不僅保障了子女生活，也成功隔離了前妻的干預 [11]。
+        </div>
+        <a href="https://www.google.com/search?q=名人+猝逝+生前信託+防前妻" target="_blank" class="story-link">🔗 查閱生前信託防產權外流真實案例</a>
+      </div>
+    </div>
+
+    <div class="accordion-item cat-2" onclick="toggleAccordion(this)">
+      <div class="accordion-header">扶養親屬列報實務 <span class="icon-cross">+</span></div>
+      <div class="accordion-content">
+        【核心規範】同一直系尊親屬僅能由一人列報扶養。若兄弟姊妹重複申報且無協議，國稅局將依「實際扶養事實」認定。<br>
+        <div class="case-box">
+          <div class="case-title">📂 案例說明：</div>
+          兄弟兩人都把母親報在自己的綜所稅裡搶免稅額。由於兩人不願妥協，國稅局介入調查「實際扶養事實」。經查明，母親實際與弟弟同住滿300天，且醫療與長照費用均由弟弟帳戶扣款，最終判定免稅額歸屬弟弟，哥哥遭剔除補稅 [12]。
+        </div>
+        <a href="https://www.google.com/search?q=綜所稅+重複申報扶養父母+實際扶養事實" target="_blank" class="story-link">🔗 查閱兄弟爭報扶養遭補稅案例</a>
+      </div>
+    </div>
+
+  </main>
+
+
+  <!-- === 頁面 3: 家族傳承 === -->
+  <main id="page3" class="page-section">
+    
+    <div class="section-title">家族傳承安排策略</div>
+
+    <div class="accordion-item cat-3" onclick="toggleAccordion(this)">
+      <div class="accordion-header">遺產稅實物抵繳 <span class="icon-cross">+</span></div>
+      <div class="accordion-content">
+        【核心規範】應納遺產稅達30萬且「現金繳納有困難」得申請實物抵繳。若被繼承人遺留現金大於稅款，國稅局將駁回抵繳。<br>
+        <div class="case-box">
+          <div class="case-title">📂 案例說明：</div>
+          老董事長過世，遺產含1000萬土地與2億元存款，應納稅額為3211萬。繼承人想用土地「實物抵繳」保留現金。但國稅局認定帳戶有2億現金「並無繳現困難」，直接駁回申請。若存款僅500萬，則可合法用土地或股票抵繳 [13]。
+        </div>
+        <a href="https://www.google.com/search?q=遺產稅+實物抵繳+駁回+無繳現困難" target="_blank" class="story-link">🔗 查閱遺產稅實物抵繳遭拒判例</a>
+      </div>
+    </div>
+
+    <div class="accordion-item cat-3" onclick="toggleAccordion(this)">
+      <div class="accordion-header">擬制遺產課稅 <span class="icon-cross">+</span></div>
+      <div class="accordion-content">
+        【核心規範】死亡前2年內贈與配偶財產應併計遺產。依114年新制，該財產視為現存，配偶仍可主張「剩餘財產差額分配請求權」。<br>
+        <div class="case-box">
+          <div class="case-title">📂 案例說明：</div>
+          好野君過世前半年匯款5億元給妻子，過世時自己帳戶僅剩1.2億。這5億依法被國稅局「擬制」拉回算遺產。但依據憲法法庭判決與最新處理原則，妻子仍可將這5億列入計算，行使剩餘財產分配請求權，大幅抵減了天價遺產稅 [14]。
+        </div>
+        <a href="https://www.google.com/search?q=憲法法庭+死亡前二年贈與配偶+遺產稅" target="_blank" class="story-link">🔗 查閱死亡前贈與配偶釋憲案報導</a>
+      </div>
+    </div>
+
+    <div class="accordion-item cat-3" onclick="toggleAccordion(this)">
+      <div class="accordion-header">全球設籍稅務注意 <span class="icon-cross">+</span></div>
+      <div class="accordion-content">
+        【核心規範】家族二代若取得雙重國籍或長居海外，將面臨 CRS 資訊交換透明化，且跨國繼承時極易面臨兩國雙重課徵遺產稅。<br>
+        <div class="case-box">
+          <div class="case-title">📂 案例說明：</div>
+          富豪的兒子早年取得美國綠卡並定居加州。富豪在台灣過世後，兒子不僅要繳納台灣遺產稅，因其具備美國稅務居民身分，這筆龐大遺產還必須向美國 IRS 申報。由於台灣能扣抵的海外稅額設有上限，最終導致嚴重的雙重課稅損失 [15]。
+        </div>
+        <a href="https://www.google.com/search?q=美國籍+台灣繼承遺產+雙重課稅" target="_blank" class="story-link">🔗 查閱台美雙重國籍遺產稅痛點案例</a>
+      </div>
+    </div>
+
+    <div class="accordion-item cat-3" onclick="toggleAccordion(this)">
+      <div class="accordion-header">代際傳承保險工具 <span class="icon-cross">+</span></div>
+      <div class="accordion-content">
+        【核心規範】保險指定受益人原則免計遺產。高資產族常規劃「三代保單」，達到傳承、預留稅源與免計基本所得的三重效益。<br>
+        <div class="case-box">
+          <div class="case-title">📂 案例說明：</div>
+          爺爺規劃「三代保單」：自己出錢(要保人)，以兒子為被保險人，孫子為身故受益人。當兒子過世時，孫子獲賠上千萬保險金。依規此理賠金不計入兒子的遺產；且只要全戶死亡給付低於3740萬，孫子連基本所得稅都不用繳，完美傳承 [16]。
+        </div>
+        <a href="https://www.google.com/search?q=三代保單+財富傳承+節稅案例" target="_blank" class="story-link">🔗 查閱三代保單傳承實務解析</a>
+      </div>
+    </div>
+
+    <div class="accordion-item cat-3" onclick="toggleAccordion(this)">
+      <div class="accordion-header">資產保全與企業永續 <span class="icon-cross">+</span></div>
+      <div class="accordion-content">
+        【核心規範】為防後代爭產與股權外流，應將信託、閉鎖性公司、保險與遺囑等多管齊下，築起不可撼動的傳承防護網。<br>
+        <div class="case-box">
+          <div class="case-title">📂 案例說明：</div>
+          某老牌製造廠為防二代爭產賣股，成立「閉鎖性公司」持有集團所有股權，章程嚴格限制股份轉讓，並發行擁有「黃金否決權」的特別股給接班長子。同時輔以家族憲章，確保家族資產不因婚姻或個人負債而外流，實現永續經營 [17]。
+        </div>
+        <a href="https://www.google.com/search?q=閉鎖性公司+家族傳承+特別股+案例" target="_blank" class="story-link">🔗 查閱閉鎖性公司鞏固經營權案例</a>
+      </div>
+    </div>
+
+    <div class="accordion-item cat-3" onclick="toggleAccordion(this)">
+      <div class="accordion-header">家族辦公室全解析 <span class="icon-cross">+</span></div>
+      <div class="accordion-content">
+        【核心規範】家族辦公室面臨專業人才短缺，應從「獵才」轉向「育才」，並賦予專業經理人「共同投資權」以深化歸屬感。<br>
+        <div class="case-box">
+          <div class="case-title">📂 案例說明：</div>
+          傳產大亨二代無意接班，大亨遂設立「單一家族辦公室(SFO)」，聘請頂尖投資長代管百億資金。為防高階人才跳槽，大亨在治理機制中加入「共同投資權」，讓投資長以自有資金與家族按比例入股標的，成功把外人變為利益共同的家人 [18, 19]。
+        </div>
+        <a href="https://www.google.com/search?q=家族辦公室+專業經理人+共同投資權" target="_blank" class="story-link">🔗 查閱家族辦公室留才與投資案例</a>
+      </div>
+    </div>
+
+  </main>
+
+
+  <!-- === 頁面 4: 報稅試算表 === -->
+  <main id="page4" class="page-section">
+    <div class="section-title">線上實用工具</div>
+    <p style="color:#aaa; line-height:1.6; margin-bottom: 20px;">
+      【專屬捷徑】您即將前往財政部電子申報繳稅服務網站。您可透過國稅局提供的官方系統，進行 114 年度個人綜合所得稅之線上稅額試算與申報確認作業。
+    </p>
+    
+    <a href="http://tax.nat.gov.tw" target="_blank" class="calc-button">
+      前往國稅局報稅試算系統 ➔
+    </a>
+  </main>
+
+  <!-- App 底部導覽列 -->
+  <nav class="bottom-nav">
+    <div class="nav-item active" onclick="switchPage('page1', this)">
+      <span class="nav-icon">📊</span>
+      綜所稅申報
+    </div>
+    <div class="nav-item" onclick="switchPage('page2', this)">
+      <span class="nav-icon">💡</span>
+      稅務新時代
+    </div>
+    <div class="nav-item" onclick="switchPage('page3', this)">
+      <span class="nav-icon">🛡️</span>
+      家族傳承
+    </div>
+    <div class="nav-item" onclick="switchPage('page4', this)">
+      <span class="nav-icon">🧮</span>
+      報稅試算
+    </div>
+  </nav>
 
   <script>
-    // 1. App 級別即時搜尋過濾器
-    document.getElementById('searchInput').addEventListener('input', function() {
-      const filterText = this.value.toLowerCase();
-      const gridItems = document.querySelectorAll('.grid-item');
-
-      gridItems.forEach(function(item) {
-        // 抓取每個方塊內文字包含隱藏資料
-        const itemContent = item.innerText.toLowerCase();
-        // 依關鍵字顯示隱藏
-        if (itemContent.includes(filterText)) {
-          item.style.display = 'flex';
-        } else {
-          item.style.display = 'none';
-        }
-      });
-    });
-
-    // 2. 原生 App 質感彈窗控制
-    const overlay = document.getElementById('modalOverlay');
-    const modal = document.getElementById('appModal');
-
-    function openModal(itemElement) {
-      // 讀取隱藏在方塊內的資料
-      const hiddenData = itemElement.querySelector('.hidden-data');
-      if(!hiddenData) return;
-
-      document.getElementById('mCat').innerText = hiddenData.querySelector('.d-cat').innerText;
-      document.getElementById('mTitle').innerText = hiddenData.querySelector('.d-title').innerText;
-      document.getElementById('mCore').innerText = hiddenData.querySelector('.d-core').innerText;
-      document.getElementById('mCase').innerText = hiddenData.querySelector('.d-case').innerText;
+    // 切換頁面
+    function switchPage(pageId, navElement) {
+      const pages = document.querySelectorAll('.page-section');
+      pages.forEach(page => page.classList.remove('active'));
+      const navItems = document.querySelectorAll('.nav-item');
+      navItems.forEach(item => item.classList.remove('active'));
       
-      const linkElement = document.getElementById('mLinkText');
-      linkElement.href = hiddenData.querySelector('.d-link').innerText;
-      linkElement.innerText = hiddenData.querySelector('.d-link-text').innerText;
-
-      // 觸發顯示動畫
-      overlay.classList.add('active');
-      modal.classList.add('active');
+      document.getElementById(pageId).classList.add('active');
+      navElement.classList.add('active');
     }
 
-    function closeModal() {
-      overlay.classList.remove('active');
-      modal.classList.remove('active');
+    // 手風琴展開/收合
+    function toggleAccordion(element) {
+      element.classList.toggle('open');
     }
   </script>
 

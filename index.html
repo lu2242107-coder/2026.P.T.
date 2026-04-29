@@ -3,9 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>VIP 財富傳承與稅務導覽 App</title>
+<title>VIP 財富傳承與遠銀稅務攻防 App</title>
 <style>
-  /* 尊榮深色主題與流沙金配色 */
+  /* ==========================================
+     基礎尊榮深色主題與全局設定
+     ========================================== */
   :root {
     --gold-light: #fef8ca;
     --gold-main: #d4af37;
@@ -14,6 +16,8 @@
     --card-inner: #121212;
   }
   
+  * { box-sizing: border-box; }
+
   body {
     font-family: 'PingFang TC', 'Helvetica Neue', 'Microsoft JhengHei', sans-serif;
     background-color: var(--bg-color);
@@ -24,156 +28,107 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  /* 1. 極致閃亮加大導覽標題 */
+  /* 1. 極致閃亮加大導覽標題與加入桌面按鈕 */
   .vip-header {
     text-align: center;
     padding: 35px 20px 15px;
     background: linear-gradient(180deg, rgba(20,20,20,1) 0%, rgba(5,5,5,0) 100%);
+    position: relative;
   }
   
   .vip-title {
-    font-size: 28px;
-    font-weight: 900;
-    letter-spacing: 2px;
-    margin: 0;
+    font-size: 26px; font-weight: 900; letter-spacing: 2px; margin: 0;
     background: linear-gradient(to right, var(--gold-dark), var(--gold-light), var(--gold-main), var(--gold-light), var(--gold-dark));
-    background-size: 200% auto;
-    color: transparent;
-    -webkit-background-clip: text;
-    background-clip: text;
+    background-size: 200% auto; color: transparent;
+    -webkit-background-clip: text; background-clip: text;
     animation: goldShine 4s linear infinite;
     text-shadow: 0 0 20px rgba(252, 246, 186, 0.3);
   }
 
-  @keyframes goldShine {
-    to { background-position: 200% center; }
-  }
+  @keyframes goldShine { to { background-position: 200% center; } }
 
-  /* 2. 常駐毛玻璃搜尋列 (優化高度) */
+  .install-btn {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 8px 16px;
+    background: rgba(212, 175, 55, 0.15);
+    border: 1px solid var(--gold-dark);
+    border-radius: 20px;
+    color: var(--gold-light);
+    font-size: 13px; font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
+    transition: all 0.3s ease;
+  }
+  .install-btn:active { transform: scale(0.95); background: rgba(212, 175, 55, 0.3); }
+
+  /* 2. 常駐毛玻璃搜尋列 (Sticky) */
   .search-container {
-    position: sticky;
-    top: 0;
-    z-index: 50;
+    position: sticky; top: 0; z-index: 50;
     background-color: rgba(5, 5, 5, 0.85);
-    padding: 10px 15px;
-    backdrop-filter: blur(20px);
+    padding: 10px 15px; backdrop-filter: blur(20px);
     border-bottom: 1px solid rgba(212, 175, 55, 0.15);
   }
 
   .search-input {
-    width: 100%;
-    padding: 12px 20px;
-    border-radius: 25px;
+    width: 100%; padding: 12px 20px; border-radius: 25px;
     border: 1px solid rgba(212, 175, 55, 0.4);
     background-color: rgba(255, 255, 255, 0.05);
-    color: var(--gold-light);
-    font-size: 15px;
-    outline: none;
-    box-sizing: border-box;
+    color: var(--gold-light); font-size: 15px; outline: none;
     transition: all 0.3s ease;
   }
   .search-input:focus {
     box-shadow: 0 0 15px rgba(252, 246, 186, 0.3);
-    border-color: var(--gold-light);
-    background-color: rgba(0, 0, 0, 0.8);
+    border-color: var(--gold-light); background-color: rgba(0, 0, 0, 0.8);
   }
   .search-input::placeholder { color: #777; }
 
-  /* 3. 頁面與雙排緊湊網格佈局 */
+  /* 3. 分頁與網格系統 */
   .page-section { display: none; animation: fadeIn 0.3s ease-out; }
   .page-section.active { display: block; }
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(5px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
   .grid-container {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px; /* 縮小間距 */
-    padding: 15px;
+    display: grid; grid-template-columns: repeat(2, 1fr);
+    gap: 12px; padding: 15px;
   }
 
-  /* =========================================
-     核心亮點：動態流沙閃亮框架 (Flowing Sand)
-     ========================================= */
+  /* 精緻微矩形與動態流沙邊框 */
   .grid-item {
-    position: relative;
-    border-radius: 12px;
-    padding: 14px 12px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    min-height: 80px; /* 移除正方形比例，改為貼合字體的微矩形 */
-    z-index: 1;
-    cursor: pointer;
-    overflow: hidden;
+    position: relative; border-radius: 12px; padding: 14px 12px;
+    display: flex; flex-direction: column; justify-content: center;
+    min-height: 80px; z-index: 1; cursor: pointer; overflow: hidden;
     transition: transform 0.2s ease, box-shadow 0.3s ease;
     box-shadow: 0 4px 15px rgba(0,0,0,0.6);
   }
   .grid-item:active { transform: scale(0.96); }
 
-  /* 內層深色卡片 (遮蓋中間，露出邊緣形成漸層邊框) */
   .grid-item::after {
-    content: '';
-    position: absolute;
-    top: 2px; left: 2px; right: 2px; bottom: 2px; /* 2px 的流沙邊框厚度 */
+    content: ''; position: absolute; top: 2px; left: 2px; right: 2px; bottom: 2px;
     background: linear-gradient(145deg, #181818, #0a0a0a);
-    border-radius: 10px;
-    z-index: -1;
+    border-radius: 10px; z-index: -1;
   }
 
-  /* 分類 1：經典璀璨金流沙 */
-  .cat-1 {
-    background: linear-gradient(60deg, #d4af37, #fef8ca, #aa771c, #d4af37);
-    background-size: 300% 300%;
-    animation: flowSand 4s ease infinite;
-  }
-  /* 分類 2：琥珀玫瑰金流沙 */
-  .cat-2 {
-    background: linear-gradient(60deg, #e6c27a, #ffffff, #b87333, #e6c27a);
-    background-size: 300% 300%;
-    animation: flowSand 5s ease infinite alternate;
-  }
-  /* 分類 3：鉑金深琥珀流沙 */
-  .cat-3 {
-    background: linear-gradient(60deg, #bf953f, #e6d598, #5c4000, #bf953f);
-    background-size: 300% 300%;
-    animation: flowSand 6s ease-in-out infinite;
-  }
-  /* 實用工具：極致耀眼脈衝光 */
-  .cat-tool {
-    background: linear-gradient(60deg, #ffffff, #fef8ca, #d4af37, #ffffff);
-    background-size: 300% 300%;
-    animation: flowPulse 2s linear infinite;
-    box-shadow: 0 0 20px rgba(252, 246, 186, 0.4);
-  }
+  /* 四種流沙特效 */
+  .cat-1 { background: linear-gradient(60deg, #d4af37, #fef8ca, #aa771c, #d4af37); background-size: 300% 300%; animation: flowSand 4s ease infinite; }
+  .cat-2 { background: linear-gradient(60deg, #e6c27a, #ffffff, #b87333, #e6c27a); background-size: 300% 300%; animation: flowSand 5s ease infinite alternate; }
+  .cat-3 { background: linear-gradient(60deg, #bf953f, #e6d598, #5c4000, #bf953f); background-size: 300% 300%; animation: flowSand 6s ease-in-out infinite; }
+  .cat-tool { background: linear-gradient(60deg, #ffffff, #fef8ca, #d4af37, #ffffff); background-size: 300% 300%; animation: flowPulse 2s linear infinite; box-shadow: 0 0 20px rgba(252, 246, 186, 0.4); }
+  .cat-feib { background: linear-gradient(60deg, #A9A9A9, #FFFFFF, #4F4F4F, #A9A9A9); background-size: 300% 300%; animation: flowSand 4s linear infinite; }
 
-  @keyframes flowSand {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-  }
-  @keyframes flowPulse {
-    0% { background-position: 0% 50%; box-shadow: 0 0 10px rgba(252,246,186,0.3); }
-    50% { background-position: 100% 50%; box-shadow: 0 0 25px rgba(252,246,186,0.7); }
-    100% { background-position: 0% 50%; box-shadow: 0 0 10px rgba(252,246,186,0.3); }
-  }
+  @keyframes flowSand { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+  @keyframes flowPulse { 0% { background-position: 0% 50%; box-shadow: 0 0 10px rgba(252,246,186,0.3); } 50% { background-position: 100% 50%; box-shadow: 0 0 25px rgba(252,246,186,0.7); } 100% { background-position: 0% 50%; box-shadow: 0 0 10px rgba(252,246,186,0.3); } }
 
-  /* 緊湊化字體與間距 */
   .item-category { font-size: 11px; color: var(--gold-main); font-weight: 800; margin-bottom: 4px; z-index: 2; }
   .item-title { font-size: 15px; font-weight: 900; line-height: 1.3; z-index: 2; color: #fff; }
-  
   .hidden-data { display: none; }
-
-  /* 縮小版浮水印數字，完美融入微矩形 */
   .item-number {
     position: absolute; bottom: -8px; right: -2px;
     font-size: 55px; font-weight: 900; color: rgba(255,255,255,0.03);
     line-height: 1; font-style: italic; z-index: 1; pointer-events: none;
   }
 
-  /* 4. 底部全螢幕深色彈窗 (Bottom Sheet Modal) */
+  /* 4. 全螢幕彈窗 (Modal) */
   .modal-overlay {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px);
@@ -194,72 +149,133 @@
 
   .modal-handle { width: 40px; height: 5px; background: #444; border-radius: 5px; margin: 15px auto; }
   .modal-content-area { padding: 0 25px 30px; overflow-y: auto; flex: 1; }
-  
   .modal-cat { color: var(--gold-main); font-size: 13px; font-weight: bold; margin-bottom: 5px; }
   .modal-title { font-size: 22px; font-weight: 900; color: #fff; margin: 0 0 20px; line-height: 1.3; }
-
   .modal-section-title { color: var(--gold-light); font-size: 15px; font-weight: bold; margin-bottom: 8px; }
   .modal-core { color: #ccc; font-size: 15px; line-height: 1.6; margin-bottom: 25px; }
 
-  /* 淺金色引號框 (案例說明) */
   .modal-quote-box {
-    background: rgba(212, 175, 55, 0.08);
-    border-left: 4px solid var(--gold-main);
-    padding: 15px 18px;
-    border-radius: 0 12px 12px 0;
-    color: #e6e6e6;
-    font-size: 14.5px;
-    line-height: 1.6;
-    margin-bottom: 30px;
-    position: relative;
+    background: rgba(212, 175, 55, 0.08); border-left: 4px solid var(--gold-main);
+    padding: 15px 18px; border-radius: 0 12px 12px 0; color: #e6e6e6;
+    font-size: 14.5px; line-height: 1.6; margin-bottom: 30px; position: relative;
   }
   .modal-quote-box::before {
-    content: '“';
-    position: absolute; top: -5px; right: 15px;
-    font-size: 60px; color: rgba(252, 246, 186, 0.08);
-    font-family: serif; line-height: 1;
+    content: '“'; position: absolute; top: -5px; right: 15px;
+    font-size: 60px; color: rgba(252, 246, 186, 0.08); font-family: serif; line-height: 1;
   }
 
-  /* 真實故事超連結按鈕 */
   .story-link {
     display: block; text-align: center;
     background: linear-gradient(135deg, rgba(77,166,255,0.1), rgba(0,102,204,0.25));
-    color: #66b3ff; text-decoration: none;
-    font-weight: bold; font-size: 16px;
-    padding: 15px; border-radius: 16px;
-    border: 1px solid rgba(102, 179, 255, 0.3);
-    transition: background 0.2s;
+    color: #66b3ff; text-decoration: none; font-weight: bold; font-size: 16px;
+    padding: 15px; border-radius: 16px; border: 1px solid rgba(102, 179, 255, 0.3);
   }
-  .story-link:active { background: rgba(77,166,255,0.35); }
 
-  /* 5. 四個分頁導覽列 */
+  /* 5. 底部 5 分頁導覽列 */
   .bottom-nav {
     position: fixed; bottom: 0; width: 100%;
-    background-color: rgba(10, 10, 10, 0.95);
-    backdrop-filter: blur(15px);
+    background-color: rgba(10, 10, 10, 0.95); backdrop-filter: blur(15px);
     border-top: 1px solid rgba(212, 175, 55, 0.15);
     display: flex; justify-content: space-around;
     padding: 10px 0 20px; z-index: 900;
   }
   .nav-item {
-    color: #666; text-align: center; font-size: 11px; font-weight: bold;
+    color: #666; text-align: center; font-size: 10.5px; font-weight: bold;
     flex: 1; cursor: pointer; transition: 0.3s;
   }
-  .nav-item .nav-icon { font-size: 22px; margin-bottom: 3px; display: block; }
+  .nav-item .nav-icon { font-size: 20px; margin-bottom: 3px; display: block; }
   .nav-item.active { color: var(--gold-light); text-shadow: 0 0 12px rgba(212, 175, 55, 0.5); }
+
+  /* ==========================================
+     遠銀尊榮綜所稅系統 (專屬樣式)
+     ========================================== */
+  .back-btn {
+    display: inline-block; color: #DAA520; font-size: 16px; font-weight: bold;
+    cursor: pointer; margin: 10px 15px; padding: 5px 10px;
+    background: rgba(218,165,32,0.1); border-radius: 8px; border: 1px solid #DAA520;
+    text-shadow: 0 0 5px rgba(218, 165, 32, 0.5);
+  }
+
+  .feib-content { padding: 0 15px 30px 15px; animation: fadeIn 0.3s ease; }
+  .gold-glow {
+    background: linear-gradient(45deg, #B38728, #FBF5B7, #DAA520, #FDF5E6, #B38728);
+    background-size: 200% auto; color: transparent; -webkit-background-clip: text; background-clip: text;
+    animation: goldShine 3s linear infinite; text-shadow: 0 0 10px rgba(218, 165, 32, 0.2);
+  }
+  .feib-content h2.section-title { font-size: 22px; margin-bottom: 20px; border-left: 5px solid #DAA520; padding-left: 10px; line-height: 1.2; }
+  .feib-content h3 { font-size: 18px; color: #DAA520; margin: 25px 0 10px 0; }
+  .feib-content p, .feib-content li { margin-bottom: 12px; color: #d1d1d1; font-size: 15px; line-height: 1.6; }
+  .feib-content ul { padding-left: 20px; }
+  
+  /* 遠銀 10大情境 4 欄位專屬卡片 */
+  .scenario-card {
+    background: rgba(20, 20, 20, 0.9); border: 1px solid #333;
+    border-radius: 12px; padding: 15px; margin-bottom: 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+  }
+  .scenario-card h4 { color: #FDF5E6; font-size: 17px; margin: 0 0 12px 0; border-bottom: 1px solid #444; padding-bottom: 8px;}
+  .sc-field { margin-bottom: 10px; display: flex; flex-direction: column;}
+  .sc-label { font-size: 12px; font-weight: bold; margin-bottom: 4px; padding: 3px 6px; border-radius: 4px; width: fit-content; }
+  
+  /* 4 欄位色彩區分 */
+  .label-desc { background: rgba(77, 166, 255, 0.2); color: #66b3ff; }
+  .label-psy  { background: rgba(255, 107, 107, 0.2); color: #ff6b6b; }
+  .label-talk { background: rgba(218, 165, 32, 0.2); color: #DAA520; }
+  .label-data { background: rgba(46, 204, 113, 0.2); color: #2ecc71; }
+  
+  .sc-text { font-size: 14.5px; color: #e0e0e0; line-height: 1.5; }
+
+  /* 遠銀按鈕 */
+  .feib-btn-link {
+    display: inline-block; background: linear-gradient(45deg, #B38728, #DAA520);
+    color: #000; padding: 12px 20px; border-radius: 25px; text-decoration: none;
+    font-weight: bold; margin-top: 10px; text-align: center; width: 100%; box-shadow: 0 4px 15px rgba(218, 165, 32, 0.4);
+  }
+
+  /* 自訂 Alert Modal (加入桌面說明) */
+  .alert-modal {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.8); z-index: 2000; display: none;
+    justify-content: center; align-items: center; padding: 20px;
+  }
+  .alert-box {
+    background: #1a1a1a; border: 1px solid var(--gold-main);
+    border-radius: 16px; padding: 25px; text-align: center; max-width: 320px;
+  }
+  .alert-box h3 { color: var(--gold-light); margin-top: 0; }
+  .alert-box p { color: #ccc; font-size: 15px; line-height: 1.6; text-align: left; margin-bottom: 20px;}
+  .alert-close {
+    background: var(--gold-main); color: #000; border: none; padding: 10px 20px;
+    border-radius: 20px; font-weight: bold; cursor: pointer; width: 100%;
+  }
 
 </style>
 </head>
 <body>
 
-  <!-- VIP 標題 -->
+  <!-- VIP 標題與加入桌面按鈕 -->
   <header class="vip-header">
-    <h1 class="vip-title">財富傳承與稅務導覽</h1>
+    <h1 class="vip-title">家族傳承與稅務攻防</h1>
+    <div class="install-btn" onclick="showInstallAlert()">📲 將 App 加入手機桌面</div>
   </header>
 
   <!-- 常駐毛玻璃搜尋列 -->
   <div class="search-container">
-    <input type="text" id="searchInput" class="search-input" placeholder="🔍 搜尋稅、信託、海外...">
+    <input type="text" id="searchInput" class="search-input" placeholder="🔍 搜尋稅、信託、海外、遠銀...">
+  </div>
+
+  <!-- 加入桌面說明彈窗 -->
+  <div class="alert-modal" id="installAlert">
+    <div class="alert-box">
+      <h3>📲 如何加到主畫面</h3>
+      <p>
+        <strong>🍎 iOS (iPhone/iPad)：</strong><br>
+        請點擊瀏覽器正下方的「分享」圖示 ⍗，然後向下滑動選擇「加入主畫面」。<br><br>
+        <strong>🤖 Android (安卓)：</strong><br>
+        請點擊瀏覽器右上角的「選單 (三個點)」，然後選擇「加到主畫面」。
+      </p>
+      <button class="alert-close" onclick="closeInstallAlert()">我知道了</button>
+    </div>
   </div>
 
   <!-- ================= 分頁 1: 綜所稅申報 ================= -->
@@ -267,12 +283,9 @@
     <div class="grid-container">
       
       <div class="grid-item cat-1" onclick="openModal(this)">
-        <div class="item-category">所得/海外/不動產</div>
-        <div class="item-title">個人 CFC 所得</div>
-        <div class="item-number">01</div>
+        <div class="item-category">所得/海外/不動產</div><div class="item-title">個人 CFC 所得</div><div class="item-number">01</div>
         <div class="hidden-data">
-          <div class="d-cat">綜所稅申報</div>
-          <div class="d-title">個人 CFC 所得申報</div>
+          <div class="d-cat">綜所稅申報</div><div class="d-title">個人 CFC 所得申報</div>
           <div class="d-core">當CFC盈餘在700萬元以下可豁免。若信託孳息受益人比例未明定，須按「人數平均」推算受益比例申報，以免漏報受罰。</div>
           <div class="d-case">甲將BVI公司股權交付信託，約定子女依績效分配。當年盈餘9000萬，大兒子實拿1800萬，但因合約未定死比例，報稅須依法按4人平分申報2250萬CFC營利所得，多繳稅也無法退。</div>
           <div class="d-link">https://www.google.com/search?q=CFC+信託+課稅+實際案例</div>
@@ -280,66 +293,51 @@
       </div>
 
       <div class="grid-item cat-1" onclick="openModal(this)">
-        <div class="item-category">所得/海外/不動產</div>
-        <div class="item-title">海外房產資金回台</div>
-        <div class="item-number">02</div>
+        <div class="item-category">所得/海外/不動產</div><div class="item-title">海外房產資金回台</div><div class="item-number">02</div>
         <div class="hidden-data">
-          <div class="d-cat">綜所稅申報</div>
-          <div class="d-title">海外房產資金回台</div>
+          <div class="d-cat">綜所稅申報</div><div class="d-title">海外房產資金回台</div>
           <div class="d-core">處分海外房產資金匯回須申報財產交易所得，若無法提出原始取得成本證明，依法按成交價額之12%計算所得額。</div>
-          <div class="d-case">陳小姐以4960萬出售香港房產並匯回。因單據遺失，國稅局按12%計算所得為595.2萬，併入最低稅負制課稅。若事後被查獲有更低成本單據卻未報，將面臨重罰。</div>
+          <div class="d-case">陳小姐以4960萬出售香港房產並匯回。因單據遺失，國稅局按12%計算所得為595.2萬，併入最低稅負制課稅。</div>
           <div class="d-link">https://www.google.com/search?q=海外房產+資金匯回+無法舉證成本+補稅</div>
         </div>
       </div>
 
       <div class="grid-item cat-1" onclick="openModal(this)">
-        <div class="item-category">所得/海外/不動產</div>
-        <div class="item-title">外籍人士不動產</div>
-        <div class="item-number">03</div>
+        <div class="item-category">所得/海外/不動產</div><div class="item-title">外籍人士不動產</div><div class="item-number">03</div>
         <div class="hidden-data">
-          <div class="d-cat">綜所稅申報</div>
-          <div class="d-title">外籍人士不動產課稅</div>
+          <div class="d-cat">綜所稅申報</div><div class="d-title">外籍人士不動產課稅</div>
           <div class="d-core">外籍人士買賣台灣不動產適用房地合一稅2.0，境外法人短期持有(2年內)出售稅率高達45%。</div>
-          <div class="d-case">外資設立開曼公司花1億元購入商辦，持有一年半後以3億元售出。因屬境外法人且持有未滿2年，直接面臨45%重稅（近9000萬）。若設立「國內投資公司」間接持有可大幅降低稅負。</div>
+          <div class="d-case">外資設立開曼公司花1億購入商辦，持有一年半以3億售出。因屬境外法人未滿2年，面臨45%重稅（近9000萬）。若設立「國內投資公司」間接持有可降稅。</div>
           <div class="d-link">https://www.google.com/search?q=外資+台灣不動產+房地合一稅+45%25</div>
         </div>
       </div>
 
       <div class="grid-item cat-1" onclick="openModal(this)">
-        <div class="item-category">所得/海外/不動產</div>
-        <div class="item-title">自用住宅重購退稅</div>
-        <div class="item-number">04</div>
+        <div class="item-category">所得/海外/不動產</div><div class="item-title">自用住宅重購退稅</div><div class="item-number">04</div>
         <div class="hidden-data">
-          <div class="d-cat">綜所稅申報</div>
-          <div class="d-title">舊制自用住宅重購退稅</div>
-          <div class="d-core">納稅義務人列報扶養之未成年子女出售自用住宅，自移轉日起2年內由「同一」子女重購較高價自用住宅，得退抵所得稅。</div>
-          <div class="d-case">父親將舊制公寓贈與16歲兒子。兒子隔年出售該公寓，並於內以自己名義買下總價更高的透天厝。因均屬「同一未成年子女」，父親申報綜所稅時，可依法退還該筆財產交易所得稅。</div>
+          <div class="d-cat">綜所稅申報</div><div class="d-title">舊制自用住宅重購退稅</div>
+          <div class="d-core">列報扶養之未成年子女出售自用住宅，自移轉日起2年內由「同一」子女重購較高價自用住宅，得退抵所得稅。</div>
+          <div class="d-case">父親將舊制公寓贈與16歲兒子。兒子隔年出售，並於期內以自己名義買下總價更高的透天厝。因均屬「同一未成年子女」，父親申報綜所稅時可退稅。</div>
           <div class="d-link">https://www.google.com/search?q=未成年子女+重購退稅+財政部+新令</div>
         </div>
       </div>
 
       <div class="grid-item cat-1" onclick="openModal(this)">
-        <div class="item-category">扣除與申報</div>
-        <div class="item-title">免稅與扣除額調高</div>
-        <div class="item-number">05</div>
+        <div class="item-category">扣除與申報</div><div class="item-title">免稅與扣除額調高</div><div class="item-number">05</div>
         <div class="hidden-data">
-          <div class="d-cat">綜所稅申報</div>
-          <div class="d-title">免稅與扣除額調高</div>
-          <div class="d-core">114年基本生活費調高至21.3萬；長照扣除額調高至18萬；租金支出改列特別扣除；幼兒扣除擴大至6歲且取消排富。</div>
-          <div class="d-case">甲君扶養2名大學生與2名父母，一家六口。依114年新制，全戶基本生活費為127.8萬。扣除免稅與標準扣除額後，可額外獲得37.4萬的「基本生活費差額」自所得減除，大幅降稅。</div>
+          <div class="d-cat">綜所稅申報</div><div class="d-title">免稅與扣除額調高</div>
+          <div class="d-core">114年基本生活費調高至21.3萬；長照扣除額調高至18萬；租金支出改列特別扣除；幼兒扣除擴大至6歲。</div>
+          <div class="d-case">甲君扶養2名大學生與2名父母。依114年新制全戶基本生活費為127.8萬。扣除免稅與標準扣除額後，可額外獲得37.4萬「基本生活費差額」減除。</div>
           <div class="d-link">https://www.google.com/search?q=114年+基本生活費調高+節稅</div>
         </div>
       </div>
 
       <div class="grid-item cat-1" onclick="openModal(this)">
-        <div class="item-category">扣除與申報</div>
-        <div class="item-title">綜所稅申報 SOP</div>
-        <div class="item-number">06</div>
+        <div class="item-category">扣除與申報</div><div class="item-title">綜所稅申報 SOP</div><div class="item-number">06</div>
         <div class="hidden-data">
-          <div class="d-cat">綜所稅申報</div>
-          <div class="d-title">綜所稅申報 SOP</div>
+          <div class="d-cat">綜所稅申報</div><div class="d-title">綜所稅申報 SOP</div>
           <div class="d-core">單身所得在22.8萬以下可免申報。手機報稅4.0新增編修功能，附件上傳總容量提高至15MB。</div>
-          <div class="d-case">新鮮人小林薪資僅20萬可免申報。台商王總因單據繁多，今年使用「手機報稅4.0」，直接用手機拍照上傳高達15MB的附件並修改扣除額，無須再親跑國稅局遞交紙本。</div>
+          <div class="d-case">新鮮人小林薪資僅20萬可免申報。台商王總因單據繁多，使用「手機報稅4.0」，直接拍照上傳高達15MB的附件，無須再親跑國稅局。</div>
           <div class="d-link">https://www.google.com/search?q=手機報稅4.0+附件上傳+免臨櫃</div>
         </div>
       </div>
@@ -352,53 +350,41 @@
     <div class="grid-container">
       
       <div class="grid-item cat-2" onclick="openModal(this)">
-        <div class="item-category">稅務新時代</div>
-        <div class="item-title">高爾夫球會員證</div>
-        <div class="item-number">07</div>
+        <div class="item-category">稅務新時代</div><div class="item-title">高爾夫球會員證</div><div class="item-number">07</div>
         <div class="hidden-data">
-          <div class="d-cat">稅務新時代</div>
-          <div class="d-title">高爾夫球會員證稅務</div>
+          <div class="d-cat">稅務新時代</div><div class="d-title">高爾夫球會員證稅務</div>
           <div class="d-core">會員證屬財產交易，無論出售、贈與或繼承，均須以「市價」申報，勿以公司帳面淨值低估。</div>
-          <div class="d-case">甲先生將兼具高爾夫會員資格的股票贈與兒子。甲以公司「每股淨值60萬」申報，但國稅局查出市場行情達320萬，認定屬不相當代價移轉，當場補徵7.6萬贈與稅並加計利息。</div>
+          <div class="d-case">甲先生將兼具高爾夫會員資格的股票贈與兒子。甲以「每股淨值60萬」申報，但查出市價達320萬，認定屬不相當代價移轉，當場補徵贈與稅。</div>
           <div class="d-link">https://www.google.com/search?q=高爾夫球會員證+贈與稅+市價+補稅</div>
         </div>
       </div>
 
       <div class="grid-item cat-2" onclick="openModal(this)">
-        <div class="item-category">稅務新時代</div>
-        <div class="item-title">頂客單身族繼承</div>
-        <div class="item-number">08</div>
+        <div class="item-category">稅務新時代</div><div class="item-title">頂客單身族繼承</div><div class="item-number">08</div>
         <div class="hidden-data">
-          <div class="d-cat">稅務新時代</div>
-          <div class="d-title">頂客與單身族遺產繼承</div>
+          <div class="d-cat">稅務新時代</div><div class="d-title">頂客與單身族遺產繼承</div>
           <div class="d-core">單身族若無子女與父母，遺產依法由兄弟姊妹繼承。若想留給非親屬，需透過保險或信託對抗「特留分」。</div>
-          <div class="d-case">知名單身藝人猝逝，生前曾表示想將遺產全給照顧她的乾兒子。但未妥善規劃，依法兄長仍能主張「特留分」分產。若生前將乾兒子列為人壽保險受益人，便能合法隔離該資產。</div>
+          <div class="d-case">知名單身藝人猝逝，生前表示想將遺產全給乾兒子。但未妥善規劃，依法兄長仍能主張「特留分」分產。若生前將乾兒子列為人壽保險受益人則可隔離。</div>
           <div class="d-link">https://www.google.com/search?q=單身藝人+遺產繼承+特留分</div>
         </div>
       </div>
 
       <div class="grid-item cat-2" onclick="openModal(this)">
-        <div class="item-category">稅務新時代</div>
-        <div class="item-title">生前信託課稅</div>
-        <div class="item-number">09</div>
+        <div class="item-category">稅務新時代</div><div class="item-title">生前信託課稅</div><div class="item-number">09</div>
         <div class="hidden-data">
-          <div class="d-cat">稅務新時代</div>
-          <div class="d-title">國內生前信託課稅</div>
+          <div class="d-cat">稅務新時代</div><div class="d-title">國內生前信託課稅</div>
           <div class="d-core">生前信託可達資產隔離，若為「他益信託」且不保留變更權，設立時即課贈與稅，未來獲利課受益人所得稅。</div>
-          <div class="d-case">富商擔心猝逝後遺產會被前妻以「監護人」身分掌控。他生前設立「他益信託」，約定資產由銀行代管，待子女滿25歲後分期領取。此舉保障了子女，也成功隔離了前妻干預。</div>
+          <div class="d-case">富商擔心遺產被前妻以監護人身分掌控。生前設立「他益信託」，約定資產由銀行代管，待子女滿25歲後分期領取，成功隔離前妻干預。</div>
           <div class="d-link">https://www.google.com/search?q=生前信託+防前妻+資產隔離</div>
         </div>
       </div>
 
       <div class="grid-item cat-2" onclick="openModal(this)">
-        <div class="item-category">稅務新時代</div>
-        <div class="item-title">扶養親屬實務</div>
-        <div class="item-number">10</div>
+        <div class="item-category">稅務新時代</div><div class="item-title">扶養親屬實務</div><div class="item-number">10</div>
         <div class="hidden-data">
-          <div class="d-cat">稅務新時代</div>
-          <div class="d-title">扶養親屬列報實務</div>
+          <div class="d-cat">稅務新時代</div><div class="d-title">扶養親屬列報實務</div>
           <div class="d-core">同一直系尊親屬僅能一人列報。若多名子女重複申報且無協議，國稅局將依「實際扶養事實」綜合認定。</div>
-          <div class="d-case">兄弟兩人都報母親搶免稅額且不願妥協，國稅局介入調查「實際扶養事實」。經查母親實際與弟弟同住滿300天，且長照費用均由弟弟扣款，最終免稅額歸屬弟弟，哥哥遭剔除補稅。</div>
+          <div class="d-case">兄弟兩人都報母親搶免稅額，國稅局調查。經查母親實際與弟弟同住，且長照費用由弟弟扣款，最終免稅額歸屬弟弟，哥哥遭補稅。</div>
           <div class="d-link">https://www.google.com/search?q=綜所稅+重複申報扶養+實際扶養事實</div>
         </div>
       </div>
@@ -411,79 +397,61 @@
     <div class="grid-container">
 
       <div class="grid-item cat-3" onclick="openModal(this)">
-        <div class="item-category">家族傳承策略</div>
-        <div class="item-title">遺產稅實物抵繳</div>
-        <div class="item-number">11</div>
+        <div class="item-category">家族傳承策略</div><div class="item-title">遺產稅實物抵繳</div><div class="item-number">11</div>
         <div class="hidden-data">
-          <div class="d-cat">家族傳承</div>
-          <div class="d-title">遺產稅實物抵繳</div>
+          <div class="d-cat">家族傳承</div><div class="d-title">遺產稅實物抵繳</div>
           <div class="d-core">應納稅額達30萬且「現金繳納有困難」得申請實物抵繳。若被繼承人遺留現金大於稅款，將被駁回。</div>
-          <div class="d-case">老董過世遺產含1000萬土地與2億存款，應納稅3211萬。繼承人想用土地「實物抵繳」保留現金。但國稅局認定帳戶有2億現金「無繳現困難」，直接駁回。若存款僅500萬，則可合法抵繳。</div>
+          <div class="d-case">老董遺產含1000萬土地與2億存款。繼承人想用土地「實物抵繳」。但國稅局認定帳戶有2億現金「無繳現困難」駁回。若存款僅500萬則可抵繳。</div>
           <div class="d-link">https://www.google.com/search?q=遺產稅+實物抵繳+無繳現困難</div>
         </div>
       </div>
 
       <div class="grid-item cat-3" onclick="openModal(this)">
-        <div class="item-category">家族傳承策略</div>
-        <div class="item-title">擬制遺產課稅</div>
-        <div class="item-number">12</div>
+        <div class="item-category">家族傳承策略</div><div class="item-title">擬制遺產課稅</div><div class="item-number">12</div>
         <div class="hidden-data">
-          <div class="d-cat">家族傳承</div>
-          <div class="d-title">擬制遺產課稅</div>
+          <div class="d-cat">家族傳承</div><div class="d-title">擬制遺產課稅</div>
           <div class="d-core">死亡前2年內贈與配偶財產應併計遺產。依憲法法庭新制，該擬制遺產視為現存，配偶可主張剩餘財產分配請求權。</div>
-          <div class="d-case">好野君過世前半年匯5億給妻子。這5億依法被國稅局「擬制」算作遺產。但依據憲法法庭判決與最新原則，妻子仍可將這5億列入計算，行使剩餘財產分配請求權，大幅抵減遺產稅。</div>
+          <div class="d-case">好野君過世前半年匯5億給妻子。被國稅局「擬制」算作遺產。但依據憲法法庭判決，妻子仍可將這5億列入計算，行使剩餘財產分配請求權抵減遺產稅。</div>
           <div class="d-link">https://www.google.com/search?q=憲法法庭+死亡前二年贈與配偶</div>
         </div>
       </div>
 
       <div class="grid-item cat-3" onclick="openModal(this)">
-        <div class="item-category">家族傳承策略</div>
-        <div class="item-title">全球設籍稅務</div>
-        <div class="item-number">13</div>
+        <div class="item-category">家族傳承策略</div><div class="item-title">全球設籍稅務</div><div class="item-number">13</div>
         <div class="hidden-data">
-          <div class="d-cat">家族傳承</div>
-          <div class="d-title">全球設籍稅務注意</div>
+          <div class="d-cat">家族傳承</div><div class="d-title">全球設籍稅務注意</div>
           <div class="d-core">二代長居海外將面臨CRS資訊透明化，跨國繼承時可能面臨雙重課徵遺產稅，且海外扣抵有上限。</div>
-          <div class="d-case">富豪兒子取得美國綠卡定居加州。富豪在台過世後，兒子不僅繳台灣遺產稅，還必須向美國申報遺產。因台灣海外稅額扣抵有上限，最終導致嚴重的雙重課稅損失。</div>
+          <div class="d-case">富豪兒子取得美國綠卡定居加州。富豪過世後，兒子不僅繳台灣遺產稅，還須向美國申報。因台灣海外稅額扣抵有上限，導致嚴重的雙重課稅損失。</div>
           <div class="d-link">https://www.google.com/search?q=台美雙重國籍+遺產稅+雙重課稅</div>
         </div>
       </div>
 
       <div class="grid-item cat-3" onclick="openModal(this)">
-        <div class="item-category">家族傳承策略</div>
-        <div class="item-title">保險傳承工具</div>
-        <div class="item-number">14</div>
+        <div class="item-category">家族傳承策略</div><div class="item-title">保險傳承工具</div><div class="item-number">14</div>
         <div class="hidden-data">
-          <div class="d-cat">家族傳承</div>
-          <div class="d-title">代際傳承保險工具</div>
+          <div class="d-cat">家族傳承</div><div class="d-title">代際傳承保險工具</div>
           <div class="d-core">保險指定受益人原則免計遺產。高資產族常規劃「三代保單」達到傳承、預留稅源與免計所得的三重效益。</div>
-          <div class="d-case">爺爺規劃「三代保單」：自己出錢，兒子被保，孫子為受益人。兒子過世時，孫子獲賠千萬。此理賠不計入兒子遺產；且全年死亡給付低於3740萬，孫子連基本所得稅都不用繳。</div>
+          <div class="d-case">爺爺規劃「三代保單」：自己出錢，兒子被保，孫子為受益人。兒子過世時，孫子獲賠千萬。此理賠不計入兒子遺產，且低於3740萬連所得稅都不用繳。</div>
           <div class="d-link">https://www.google.com/search?q=三代保單+財富傳承+節稅</div>
         </div>
       </div>
 
       <div class="grid-item cat-3" onclick="openModal(this)">
-        <div class="item-category">家族傳承策略</div>
-        <div class="item-title">企業永續與閉鎖</div>
-        <div class="item-number">15</div>
+        <div class="item-category">家族傳承策略</div><div class="item-title">企業永續與閉鎖</div><div class="item-number">15</div>
         <div class="hidden-data">
-          <div class="d-cat">家族傳承</div>
-          <div class="d-title">資產保全與企業永續</div>
-          <div class="d-core">為防爭產與股權外流，應將信託、閉鎖性公司、家族憲章與遺囑等多管齊下，築起不可撼動的傳承網。</div>
-          <div class="d-case">某老牌製造廠為防二代爭產，成立「閉鎖性公司」持有集團股權，章程嚴格限制股份轉讓，並發行擁有「黃金否決權」的特別股給長子。輔以家族憲章，確保資產不因婚姻外流。</div>
+          <div class="d-cat">家族傳承</div><div class="d-title">資產保全與企業永續</div>
+          <div class="d-core">為防爭產與股權外流，應將信託、閉鎖性公司、家族憲章與遺囑等多管齊下，築起傳承網。</div>
+          <div class="d-case">某老牌製造廠成立「閉鎖性公司」持有集團股權，限制股份轉讓，並發行「黃金否決權」特別股給長子。輔以家族憲章，確保資產不因婚姻外流。</div>
           <div class="d-link">https://www.google.com/search?q=閉鎖性公司+家族傳承+特別股</div>
         </div>
       </div>
 
       <div class="grid-item cat-3" onclick="openModal(this)">
-        <div class="item-category">家族傳承策略</div>
-        <div class="item-title">家族辦公室</div>
-        <div class="item-number">16</div>
+        <div class="item-category">家族傳承策略</div><div class="item-title">家族辦公室</div><div class="item-number">16</div>
         <div class="hidden-data">
-          <div class="d-cat">家族傳承</div>
-          <div class="d-title">家族辦公室全解析</div>
-          <div class="d-core">家族辦公室分單一、聯合與專業三類。面臨人才短缺，應從獵才轉向育才並給予共同投資權。</div>
-          <div class="d-case">大亨設立家族辦公室，聘請頂尖投資長代管百億資金。為防跳槽，大亨在治理機制中加入「共同投資權」，讓投資長以自有資金按比例入股標的，成功把外人變為利益共同的家人。</div>
+          <div class="d-cat">家族傳承</div><div class="d-title">家族辦公室全解析</div>
+          <div class="d-core">家族辦公室分單一、聯合與專業三類。應從獵才轉向育才並給予共同投資權。</div>
+          <div class="d-case">大亨設立家族辦公室，聘請頂尖投資長。為防跳槽，大亨在機制中加入「共同投資權」，讓投資長以自有資金按比例入股標的，成功把外人變家人。</div>
           <div class="d-link">https://www.google.com/search?q=家族辦公室+共同投資權+人才</div>
         </div>
       </div>
@@ -494,8 +462,6 @@
   <!-- ================= 分頁 4: 報稅試算表 ================= -->
   <main id="page4" class="page-section">
     <div class="grid-container">
-      
-      <!-- 特殊脈衝發光網格，直接另開連結 -->
       <div class="grid-item cat-tool" onclick="window.open('http://tax.nat.gov.tw', '_blank')">
         <div class="item-category" style="color:var(--gold-light);">線上實用工具</div>
         <div class="item-title" style="font-size:16px;">報稅試算表</div>
@@ -504,48 +470,68 @@
           點擊此專屬捷徑將直接另開新視窗前往財政部網站進行申報試算。
         </div>
       </div>
-
     </div>
   </main>
 
-  <!-- ================= 底部全螢幕彈窗 (Bottom Sheet) ================= -->
+  <!-- ================= 分頁 5: 遠銀尊榮綜所稅系統 ================= -->
+  <main id="page5" class="page-section">
+    <!-- 內頁返回按鈕 -->
+    <div id="feib-back-btn" style="display:none;">
+      <span class="back-btn" onclick="feibGoHome()">&#10094; 返回選單</span>
+    </div>
+
+    <!-- 遠銀首頁網格選單 -->
+    <div id="feib-home" class="grid-container">
+      <div class="grid-item cat-feib" onclick="feibShowDetail('feib1')">
+        <div class="item-category" style="color:#e6e6e6;">遠銀 VIP</div><div class="item-title" style="font-size:18px;">本行繳稅特色</div><div class="item-number">01</div>
+        <div class="hidden-data">遠東銀行 繳稅特色 分期 0利率 刷卡金回饋</div> <!-- 供搜尋 -->
+      </div>
+
+      <div class="grid-item cat-feib" onclick="feibShowDetail('feib2')">
+        <div class="item-category" style="color:#e6e6e6;">實戰演練</div><div class="item-title" style="font-size:18px;">10大情境攻防</div><div class="item-number">02</div>
+        <div class="hidden-data">10大情境 實戰演練 理專 櫃員 房貸業務 心理 話術 數據</div> <!-- 供搜尋 -->
+      </div>
+
+      <div class="grid-item cat-feib" onclick="feibShowDetail('feib3')">
+        <div class="item-category" style="color:#e6e6e6;">靈魂拷問</div><div class="item-title" style="font-size:18px;">嚴謹客戶提問</div><div class="item-number">03</div>
+        <div class="hidden-data">靈魂拷問 嚴謹提問 醫指付 滿額禮 入帳日</div> <!-- 供搜尋 -->
+      </div>
+
+      <div class="grid-item cat-feib" onclick="feibShowDetail('feib4')">
+        <div class="item-category" style="color:#e6e6e6;">攻防教戰</div><div class="item-title" style="font-size:18px;">同業競品比較</div><div class="item-number">04</div>
+        <div class="hidden-data">同業競品 比較表 上海商銀 中信 富邦 國泰 攻防教戰</div> <!-- 供搜尋 -->
+      </div>
+    </div>
+
+    <!-- 遠銀內容展示區 -->
+    <div id="feib-detail" class="feib-content" style="display:none;"></div>
+
+  </main>
+
+  <!-- ================= 底部全螢幕彈窗 (Bottom Sheet for Page 1~3) ================= -->
   <div class="modal-overlay" id="modalOverlay" onclick="closeModal()"></div>
   <div class="app-modal" id="appModal">
     <div class="modal-handle" onclick="closeModal()"></div>
     <div class="modal-content-area">
       <div class="modal-cat" id="mCat"></div>
       <h2 class="modal-title" id="mTitle"></h2>
-      
       <div class="modal-section-title">【規範精華】</div>
       <div class="modal-core" id="mCore"></div>
-      
       <div class="modal-quote-box">
         <div style="color: var(--gold-main); font-weight: 900; margin-bottom: 6px;">【案例說明】</div>
         <span id="mCase"></span>
       </div>
-
       <a href="#" target="_blank" class="story-link" id="mLink">🔗 點擊查閱真實故事新聞</a>
     </div>
   </div>
 
-  <!-- ================= 底部 4 分頁導覽列 ================= -->
+  <!-- ================= 底部 5 分頁導覽列 ================= -->
   <nav class="bottom-nav">
-    <div class="nav-item active" onclick="switchPage('page1', this)">
-      <span class="nav-icon">📊</span>
-      綜所稅申報
-    </div>
-    <div class="nav-item" onclick="switchPage('page2', this)">
-      <span class="nav-icon">💡</span>
-      稅務新時代
-    </div>
-    <div class="nav-item" onclick="switchPage('page3', this)">
-      <span class="nav-icon">🛡️</span>
-      家族傳承
-    </div>
-    <div class="nav-item" onclick="switchPage('page4', this)">
-      <span class="nav-icon">🧮</span>
-      報稅試算
-    </div>
+    <div class="nav-item active" onclick="switchPage('page1', this)"><span class="nav-icon">📊</span>綜所稅</div>
+    <div class="nav-item" onclick="switchPage('page2', this)"><span class="nav-icon">💡</span>新時代</div>
+    <div class="nav-item" onclick="switchPage('page3', this)"><span class="nav-icon">🛡️</span>傳承</div>
+    <div class="nav-item" onclick="switchPage('page4', this)"><span class="nav-icon">🧮</span>試算</div>
+    <div class="nav-item" onclick="switchPage('page5', this)"><span class="nav-icon">🏦</span>遠銀系統</div>
   </nav>
 
   <script>
@@ -557,7 +543,8 @@
       
       const gridItems = activePage.querySelectorAll('.grid-item');
       gridItems.forEach(function(item) {
-        const itemContent = item.innerText.toLowerCase();
+        // 搜尋會同時抓取表面文字與 hidden-data 內的隱藏標籤
+        const itemContent = item.innerText.toLowerCase() + (item.querySelector('.hidden-data') ? item.querySelector('.hidden-data').innerText.toLowerCase() : '');
         if (itemContent.includes(filterText)) {
           item.style.display = 'flex';
         } else {
@@ -566,7 +553,15 @@
       });
     });
 
-    // 2. 底部導覽列切換邏輯
+    // 2. 加入桌面彈窗控制
+    function showInstallAlert() {
+      document.getElementById('installAlert').style.display = 'flex';
+    }
+    function closeInstallAlert() {
+      document.getElementById('installAlert').style.display = 'none';
+    }
+
+    // 3. 底部導覽列切換邏輯
     function switchPage(pageId, navElement) {
       document.getElementById('searchInput').value = '';
       document.querySelectorAll('.grid-item').forEach(item => item.style.display = 'flex');
@@ -576,29 +571,194 @@
       
       document.getElementById(pageId).classList.add('active');
       navElement.classList.add('active');
+
+      if(pageId !== 'page5') { feibGoHome(); }
     }
 
-    // 3. 全螢幕深色彈窗 (Bottom Sheet Modal) 控制
+    // 4. 全螢幕深色彈窗 (Bottom Sheet Modal) 控制
     const overlay = document.getElementById('modalOverlay');
     const modal = document.getElementById('appModal');
 
     function openModal(itemElement) {
       const hiddenData = itemElement.querySelector('.hidden-data');
       if(!hiddenData) return;
-
       document.getElementById('mCat').innerText = hiddenData.querySelector('.d-cat').innerText;
       document.getElementById('mTitle').innerText = hiddenData.querySelector('.d-title').innerText;
       document.getElementById('mCore').innerText = hiddenData.querySelector('.d-core').innerText;
       document.getElementById('mCase').innerText = hiddenData.querySelector('.d-case').innerText;
       document.getElementById('mLink').href = hiddenData.querySelector('.d-link').innerText;
-
       overlay.classList.add('active');
       modal.classList.add('active');
     }
-
     function closeModal() {
       overlay.classList.remove('active');
       modal.classList.remove('active');
+    }
+
+    // 5. ================= 遠銀系統專屬邏輯 (包含 10 大情境 4 欄位完美拆解) ================= 
+    const feibData = {
+      'feib1': `
+        <h2 class="section-title gold-glow">本行繳稅及 VIP 內容特色</h2>
+        <div class="feib-highlight-box"><p><strong>活動期間：</strong>2026/5/1 - 2026/6/1（依政府公告繳稅期間為主）。</p></div>
+        <h3>特色一：全卡友分期 0 利率（⚠️ 嚴格二擇一限制）</h3>
+        <ul>
+          <li><strong>單筆滿 3 萬：</strong>享 3 期 0 利率。</li>
+          <li><strong>單筆滿 10 萬：</strong>享 6 期 0 利率。</li>
+          <li><strong style="color:#ff6b6b;">嚴謹守則：</strong>分期 0 利率與一次付清享刷卡金為「二擇一」，<strong>若重複登錄系統將強制以「分期 0 利率」為主，不再回饋刷卡金</strong>。</li>
+        </ul>
+        <h3>特色二：指定戶一次付清享刷卡金（⚠️ 嚴格資格認定）</h3>
+        <ul>
+          <li><strong>VIP 5 星等(含)以上及頂級卡客戶(免登錄)：</strong>單筆滿 100 萬享 0.35% 刷卡金。VIP 7-8 星等回饋上限 10,000 元；VIP 5-6 星等或頂級卡回饋上限 6,000 元。</li>
+          <li><strong>遠銀帳戶自扣戶(須登錄)：</strong>單筆滿 10 萬享 0.2% 刷卡金(上限 3,000 元)。</li>
+        </ul>
+        <h3>特色三：VIP 6 星等(含)以上 Q2 滿額活動</h3>
+        <ul>
+          <li>刷新增「一般消費」滿 50 萬享 3,000 元、滿 100 萬享 10,000 元、滿 150 萬享 20,000 元刷卡金。</li>
+          <li><strong style="color:#ff6b6b;">嚴謹守則：</strong>各類稅款及公務機關繳費平台均「絕對不列入」一般消費計算。</li>
+        </ul>
+      `,
+      'feib2': `
+        <h2 class="section-title gold-glow">實戰 Q&A：10 大情境演練</h2>
+        <p style="color:#aaa; font-size:14px; margin-bottom:20px;">各情境皆依標準規範拆解為四個實戰防護欄位，精準應對客戶痛點。</p>
+        
+        <h3>💼 角色：理專（高資產客戶細節與權益防護）</h3>
+        
+        <div class="scenario-card">
+          <h4>1. VIP 資格與最高回饋的邊界條件</h4>
+          <div class="sc-field"><span class="sc-label label-desc">📝 情境描述</span><span class="sc-text">客戶目前VIP 7星等繳稅300萬，但7月資金將轉出降為4星等。</span></div>
+          <div class="sc-field"><span class="sc-label label-psy">🧠 客戶心理</span><span class="sc-text">擔憂8月底回饋時資格不符，拿不到1萬元回饋。</span></div>
+          <div class="sc-field"><span class="sc-label label-talk">💬 顧問話術</span><span class="sc-text">「請您放心。系統看『活動期間至回饋時』最高星等。只要這段時間曾是 VIP 7 星等，最高 10,000 元的回饋資格就確立了。」</span></div>
+          <div class="sc-field"><span class="sc-label label-data">📊 數據支撐</span><span class="sc-text">活動規定採「最高星等認定」機制。</span></div>
+        </div>
+
+        <div class="scenario-card">
+          <h4>2. 繳稅與 Q2 滿額的「雙重拿法」精算</h4>
+          <div class="sc-field"><span class="sc-label label-desc">📝 情境描述</span><span class="sc-text">客戶抱怨繳納的150萬稅款不列入Q2一般消費滿額活動。</span></div>
+          <div class="sc-field"><span class="sc-label label-psy">🧠 客戶心理</span><span class="sc-text">覺得稅金150萬白刷了，想追求利益極大化。</span></div>
+          <div class="sc-field"><span class="sc-label label-talk">💬 顧問話術</span><span class="sc-text">「我為您精算過，繳稅150萬請『一次付清』拿專屬6,000元回饋；同時，日常保費或百貨集中刷滿150萬拿Q2活動20,000元。分開算實拿26,000元！」</span></div>
+          <div class="sc-field"><span class="sc-label label-data">📊 數據支撐</span><span class="sc-text">綜所稅專屬回饋與Q2一般消費回饋可分別達標計算。</span></div>
+        </div>
+
+        <div class="scenario-card">
+          <h4>3. 頂級卡與星等的雙重身分衝突</h4>
+          <div class="sc-field"><span class="sc-label label-desc">📝 情境描述</span><span class="sc-text">客戶同時具備VIP 5星等及頂級卡資格，滿100萬皆有最高6,000元回饋。</span></div>
+          <div class="sc-field"><span class="sc-label label-psy">🧠 客戶心理</span><span class="sc-text">以為兩者互不衝突，想知道能否疊加拿到12,000元。</span></div>
+          <div class="sc-field"><span class="sc-label label-talk">💬 顧問話術</span><span class="sc-text">「這兩項資格合併在同一個回饋級距。符合其中一項，滿100萬最高回饋就是6,000元，每戶限擇優回饋一次。」</span></div>
+          <div class="sc-field"><span class="sc-label label-data">📊 數據支撐</span><span class="sc-text">條款明訂每戶限「擇優回饋」一次，無法疊加。</span></div>
+        </div>
+
+        <div class="scenario-card">
+          <h4>4. 附卡消費與刷卡金歸屬確認</h4>
+          <div class="sc-field"><span class="sc-label label-desc">📝 情境描述</span><span class="sc-text">客戶打算用太太的附卡刷50萬參加 VIP 6 星等 Q2 滿額。</span></div>
+          <div class="sc-field"><span class="sc-label label-psy">🧠 客戶心理</span><span class="sc-text">不確定附卡消費是否能算在自己的滿額額度內。</span></div>
+          <div class="sc-field"><span class="sc-label label-talk">💬 顧問話術</span><span class="sc-text">「是的，正附卡消費合併計算。達標後刷卡金在8月底前回饋到您(正卡)帳戶上。」</span></div>
+          <div class="sc-field"><span class="sc-label label-data">📊 數據支撐</span><span class="sc-text">正附卡合併計算，回饋統一撥入正卡帳戶。</span></div>
+        </div>
+
+        <h3>🏦 角色：櫃員（防堵作業流程爭議）</h3>
+
+        <div class="scenario-card">
+          <h4>5. 破解「重複登錄全都要」僥倖心態</h4>
+          <div class="sc-field"><span class="sc-label label-desc">📝 情境描述</span><span class="sc-text">客戶想同時拿分期0利率又拿一次付清的刷卡金，進行雙重登錄。</span></div>
+          <div class="sc-field"><span class="sc-label label-psy">🧠 客戶心理</span><span class="sc-text">抱持僥倖心態，覺得系統有漏洞可以「全都要」。</span></div>
+          <div class="sc-field"><span class="sc-label label-talk">💬 顧問話術</span><span class="sc-text">「系統有嚴格判定！只要有重複登錄，將『一律強制以分期0利率為主』，不再回饋刷卡金。」</span></div>
+          <div class="sc-field"><span class="sc-label label-data">📊 數據支撐</span><span class="sc-text">分期0利率與刷卡金為嚴格「二擇一」限制。</span></div>
+        </div>
+
+        <div class="scenario-card">
+          <h4>6. 臨時調額與永久額度的文字遊戲</h4>
+          <div class="sc-field"><span class="sc-label label-desc">📝 情境描述</span><span class="sc-text">客戶申請臨時調額10萬來繳稅，並希望全額辦理分期。</span></div>
+          <div class="sc-field"><span class="sc-label label-psy">🧠 客戶心理</span><span class="sc-text">以為只要信用卡刷得過，就能全額享有分期優惠。</span></div>
+          <div class="sc-field"><span class="sc-label label-talk">💬 顧問話術</span><span class="sc-text">「分期僅限『永久額度』辦理。臨時調額的10萬會在結帳時自動改一次付清，只有原永久餘額可享分期。」</span></div>
+          <div class="sc-field"><span class="sc-label label-data">📊 數據支撐</span><span class="sc-text">分期0利率僅適用於信用卡「永久額度」內。</span></div>
+        </div>
+
+        <div class="scenario-card">
+          <h4>7. 小額門檻的嚴格認定</h4>
+          <div class="sc-field"><span class="sc-label label-desc">📝 情境描述</span><span class="sc-text">客戶稅金為29,500元，希望能通融使用3期0利率。</span></div>
+          <div class="sc-field"><span class="sc-label label-psy">🧠 客戶心理</span><span class="sc-text">覺得差五百塊而已，期望銀行能給予VIP彈性空間。</span></div>
+          <div class="sc-field"><span class="sc-label label-talk">💬 顧問話術</span><span class="sc-text">「系統判定單筆必須『實滿3萬元整』才能啟動3期0利率，未達無法人工通融。」</span></div>
+          <div class="sc-field"><span class="sc-label label-data">📊 數據支撐</span><span class="sc-text">3期0利率門檻為單筆實滿3萬，系統化防呆無人工權限。</span></div>
+        </div>
+
+        <div class="scenario-card">
+          <h4>8. 入帳日與資金調度精算</h4>
+          <div class="sc-field"><span class="sc-label label-desc">📝 情境描述</span><span class="sc-text">客戶詢問繳完稅後何時會實際扣款，想精算資金調度。</span></div>
+          <div class="sc-field"><span class="sc-label label-psy">🧠 客戶心理</span><span class="sc-text">希望把現金留在高利活存帳戶越久越好。</span></div>
+          <div class="sc-field"><span class="sc-label label-talk">💬 顧問話術</span><span class="sc-text">「繳稅國稅局統一入帳日預計6/10(外僑6/5)，之後跟著信用卡結帳日出帳。申請分期也會從那時生效。」</span></div>
+          <div class="sc-field"><span class="sc-label label-data">📊 數據支撐</span><span class="sc-text">國稅局統一定於6月上旬（預計6/10）請款入帳。</span></div>
+        </div>
+
+        <h3>🏠 角色：房貸業務（通路推廣與防呆）</h3>
+
+        <div class="scenario-card">
+          <h4>9. 自扣帳戶失效的潛在風險</h4>
+          <div class="sc-field"><span class="sc-label label-desc">📝 情境描述</span><span class="sc-text">客戶辦理遠銀帳戶自扣扣滿10萬享0.2%回饋，打算繳完稅就立刻取消自扣。</span></div>
+          <div class="sc-field"><span class="sc-label label-psy">🧠 客戶心理</span><span class="sc-text">覺得繳稅任務已達成，不想讓銀行綁住自動扣款設定。</span></div>
+          <div class="sc-field"><span class="sc-label label-talk">💬 顧問話術</span><span class="sc-text">「千萬別提早取消自扣！8月底回饋時會檢核，若『自扣已取消』會失去最高3,000元回饋。」</span></div>
+          <div class="sc-field"><span class="sc-label label-data">📊 數據支撐</span><span class="sc-text">回饋時須具備有效卡且遠銀帳戶自扣設定未取消。</span></div>
+        </div>
+
+        <div class="scenario-card">
+          <h4>10. 分期申請管道的確保</h4>
+          <div class="sc-field"><span class="sc-label label-desc">📝 情境描述</span><span class="sc-text">客戶在國稅局 Paytax 網頁繳稅時，找不到分期選項。</span></div>
+          <div class="sc-field"><span class="sc-label label-psy">🧠 客戶心理</span><span class="sc-text">慌張以為遠銀沒有提供分期優惠，或是自己刷卡操作錯誤。</span></div>
+          <div class="sc-field"><span class="sc-label label-talk">💬 顧問話術</span><span class="sc-text">「國稅局網頁本來就無分期選項！繳完稅務必到遠銀專屬網頁或打客服按82申請分期。」</span></div>
+          <div class="sc-field"><span class="sc-label label-data">📊 數據支撐</span><span class="sc-text">分期須於活動期間內，透過遠銀專屬管道（活動網頁或語音客服）自行設定。</span></div>
+        </div>
+      `,
+      'feib3': `
+        <h2 class="section-title gold-glow">嚴謹客戶提問區 (靈魂拷問精華)</h2>
+        <h3>🟢 【最感興趣：利益極大化】</h3>
+        <ul>
+          <li><strong>Q：</strong>我如果稅金剛好 100 萬，一次付清能拿到 3,500 元還是 6,000 元？<br>
+          <strong style="color:#DAA520;">答：</strong>VIP 5星等拿 3,500，頂級卡/6星等拿 6,000。</li>
+          <li><strong>Q：</strong>辦理 6 期 0 利率後，還能享有銀行其他的刷卡滿額禮嗎？<br>
+          <strong style="color:#DAA520;">答：</strong>不行，稅款通常排除在一般消費滿額禮之外。</li>
+        </ul>
+        <h3>🟡 【最在意：隱藏風險防堵】</h3>
+        <ul>
+          <li><strong>Q：</strong>透過醫指付 APP 繳費算嗎？<br>
+          <strong style="color:#DAA520;">答：</strong>醫指付 APP 等同代繳平台，明確排除於一般消費外。</li>
+        </ul>
+        <h3>🔴 【最想發問：同業競品細節】</h3>
+        <ul>
+          <li><strong>Q：</strong>為什麼中信可以分到 24 期，你們最多 6 期？<br>
+          <strong style="color:#DAA520;">答：</strong>中信長天期需收高達 6.88% 利息，我們滿 10 萬是完全 0 利率。</li>
+        </ul>
+      `,
+      'feib4': `
+        <h2 class="section-title gold-glow">同業比較表與攻防教戰守則</h2>
+        <h3>📊 2026 同業綜所稅優惠比較表</h3>
+        <table style="width:100%; border-collapse:collapse; margin-top:10px; font-size:14px;">
+          <tr><th style="border:1px solid #444; padding:10px; background:#2a2000; color:#DAA520;">銀行</th><th style="border:1px solid #444; padding:10px; background:#2a2000; color:#DAA520;">最高回饋</th><th style="border:1px solid #444; padding:10px; background:#2a2000; color:#DAA520;">攻防盲點</th></tr>
+          <tr><td style="border:1px solid #444; padding:10px;"><strong>遠東(本行)</strong></td><td style="border:1px solid #444; padding:10px;"><strong>0.35%</strong></td><td style="border:1px solid #444; padding:10px;">最親民，永久額度內可分期</td></tr>
+          <tr><td style="border:1px solid #444; padding:10px;">上海商銀</td><td style="border:1px solid #444; padding:10px;">5.5%</td><td style="border:1px solid #444; padding:10px;">稅款僅0.5%且上限500元</td></tr>
+          <tr><td style="border:1px solid #444; padding:10px;">中國信託</td><td style="border:1px solid #444; padding:10px;">2.5%</td><td style="border:1px solid #444; padding:10px;">長天期要6.88%利息</td></tr>
+          <tr><td style="border:1px solid #444; padding:10px;">國泰世華</td><td style="border:1px solid #444; padding:10px;">無</td><td style="border:1px solid #444; padding:10px;">所有分期皆需收年利 6%</td></tr>
+        </table>
+        <h3 style="margin-top:25px;">🛡️ 攻防教戰守則</h3>
+        <div class="feib-highlight-box" style="background:rgba(218,165,32,0.1); border:1px solid rgba(218,165,32,0.3); border-radius:10px; padding:15px; margin-bottom:15px;">
+          <p><strong>⚔️ 攻防一：戳破高回饋「看得到吃不到」</strong><br>
+          「上海商銀 5.5% 上限嚴格卡在 500 元！遠銀 VIP 繳稅一次付清 0.35%，直接折抵帳單高達 10,000 元！」</p>
+        </div>
+        <a href="https://ecard.feib.com.tw/Activity/2026Tax" class="feib-btn-link" target="_blank">🎯 遠銀：分期申請入口</a>
+      `
+    };
+
+    function feibShowDetail(pageId) {
+      document.getElementById('feib-home').style.display = 'none';
+      document.getElementById('feib-detail').innerHTML = feibData[pageId];
+      document.getElementById('feib-detail').style.display = 'block';
+      document.getElementById('feib-back-btn').style.display = 'block';
+      window.scrollTo(0, 0);
+    }
+
+    function feibGoHome() {
+      document.getElementById('feib-detail').style.display = 'none';
+      document.getElementById('feib-back-btn').style.display = 'none';
+      document.getElementById('feib-home').style.display = 'grid';
+      window.scrollTo(0, 0);
     }
   </script>
 

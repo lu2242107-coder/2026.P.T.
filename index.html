@@ -483,7 +483,7 @@
 
       <div class="grid-item cat-feib" onclick="feibShowDetail('feib4')">
         <div class="item-category" style="color:#e6e6e6;">同業競品</div><div class="item-title" style="font-size:18px;">比較與查證區</div><div class="item-number">04</div>
-        <div class="hidden-data">同業競品 比較表 上海商銀 中信 富邦 國泰 玉山 台新 攻防教戰 UDN</div>
+        <div class="hidden-data">同業競品 比較表 上海商銀 中信 富邦 國泰 玉山 台新 攻防教戰 神卡精算 UDN 避雷</div>
       </div>
     </div>
 
@@ -579,7 +579,7 @@
       modal.classList.remove('active');
     }
 
-    // 5. ================= 遠銀系統專屬邏輯 (完美補齊競品表與教戰守則) ================= 
+    // 5. ================= 遠銀系統專屬邏輯 (完美補齊競品表、精算神卡分析與教戰守則) ================= 
     const feibData = {
       'feib1': `
         <h2 class="section-title gold-glow">本行繳稅及 VIP 內容特色</h2>
@@ -713,24 +713,44 @@
         <h2 class="section-title gold-glow">同業競品攻防與查證</h2>
         <h3>📊 2026 同業綜所稅優惠比較表</h3>
         <table class="compare-table">
-          <tr><th>銀行</th><th>分期0利率</th><th>最高回饋%</th><th>隱藏限制 / 攻防盲點</th></tr>
+          <tr><th>銀行</th><th>分期0利率</th><th>最高回饋</th><th>隱藏限制 / 攻防盲點</th></tr>
           <tr><td><strong style="color:#DAA520;">遠東(本行)</strong></td><td><strong>3期/6期</strong></td><td><strong>0.35%</strong></td><td>最親民，永久額度內可分期，最高拿1萬</td></tr>
-          <tr><td>上海商銀</td><td>6、12期</td><td>5.5%</td><td>稅款僅0.5%且<strong>上限500元</strong></td></tr>
-          <tr><td>中國信託</td><td>3、6期</td><td>2.5%</td><td>需繳滿2000萬配華航卡；長天期要<strong>6.88%利息</strong></td></tr>
-          <tr><td>台北富邦</td><td>3期</td><td>0.66%</td><td>超過3期即收息<strong>(最高2.75%)</strong></td></tr>
-          <tr><td>玉山銀行</td><td>6期</td><td>0.6%</td><td>星宇卡上限10萬哩；長天期需<strong>4.5%利息</strong></td></tr>
-          <tr><td>台新銀行</td><td>12期</td><td>0.5%</td><td>需財管會員且<strong>滿12萬</strong>才可分12期</td></tr>
-          <tr><td>國泰世華</td><td><strong style="color:#ff6b6b;">無0利率</strong></td><td>無</td><td>所有分期皆需收<strong>年利率 6%</strong></td></tr>
+          <tr><td>上海商銀</td><td>6、12期</td><td>5.5%</td><td>稅款僅0.5%且<strong style="color:#ff6b6b;">上限500元</strong></td></tr>
+          <tr><td>中國信託</td><td>3、6期</td><td>2.5%哩程</td><td>需繳滿2000萬；<strong style="color:#ff6b6b;">設定分期即喪失所有回饋</strong>；長天期要 6.88% 利息</td></tr>
+          <tr><td>台北富邦</td><td>3期(存戶/理財)</td><td>0.66%</td><td><strong style="color:#ff6b6b;">超過3期即收息</strong>(最高2.75%)</td></tr>
+          <tr><td>永豐銀行</td><td>6期</td><td>0.68%</td><td>私銀/亞資專屬(上限25萬)。薪轉戶滿6萬3期。</td></tr>
+          <tr><td>玉山銀行</td><td>6期</td><td>0.6%</td><td>星宇卡上限10萬哩；長天期需4.5%利息</td></tr>
+          <tr><td>台新銀行</td><td>6~12期</td><td>0.5%</td><td>需財管會員且滿12萬才可分12期</td></tr>
+          <tr><td>國泰世華</td><td>6~12期(世界卡)</td><td>小樹點0.3%</td><td>分期與回饋可雙享，但18期需收年利6%</td></tr>
         </table>
         
-        <h3 style="margin-top:25px;">🛡️ 攻防教戰守則</h3>
+        <h3 style="margin-top:25px;">🏆 斤斤計較精算師：各領域最強神卡與攻防</h3>
         <div class="scenario-card">
-          <p><strong>⚔️ 攻防一：戳破高回饋「看得到吃不到」（針對上海、中信）</strong><br>
-          <span style="color:#DAA520;">「客戶您好，上海商銀 5.5% 上限嚴格卡在 500 元！中信 2.5% 要繳滿 2000 萬。遠銀 VIP 繳稅一次付清 0.35%，直接折抵帳單高達 10,000 元，看的到吃得到！」</span></p>
+          <h4>🥇 一次付清／頂級現金回饋第一名：永豐銀行 (私銀/亞資)</h4>
+          <div class="sc-field"><span class="sc-label label-data">精算點亮點</span><span class="sc-text">高達 0.68% 刷卡金回饋，上限高達 25 萬元。最大優勢在於可「同時疊加 6 期 0 利率」！反觀富邦理財會員雖有 0.66%，但回饋與分期須嚴格二擇一。</span></div>
         </div>
         <div class="scenario-card">
-          <p><strong>⚔️ 攻防二：超長分期背後的「高額利息」（針對富邦、中信、國泰）</strong><br>
-          <span style="color:#DAA520;">「同業超長分期隱藏高額利息：中信 6.88%、富邦 2.75%、國泰世華全期 6%！遠銀滿 10 萬『無條件 6 期 0 利率』，不用付半毛利息！」</span></p>
+          <h4>✈️ 累積紅利／哩程爆發力第一名：國泰世華 & 中信</h4>
+          <div class="sc-field"><span class="sc-label label-data">國泰(點數)優勢</span><span class="sc-text">滿 1600 萬加碼 5 萬點小樹點，且明確主打「分期+回饋雙吃」，另提供不佔原額度的專屬額度，非常實用。</span></div>
+          <div class="sc-field"><span class="sc-label label-psy">中信(哩程)陷阱</span><span class="sc-text">大戶單筆滿 2000 萬送 16 萬哩。⚠️但中信規定「只要設定分期，所有回饋全數取消」。若想要哩程又想分期，建議改用玉山星宇卡。</span></div>
+        </div>
+        <div class="scenario-card">
+          <h4>💰 小資中產／低門檻第一名：兆豐銀行 (搭配台灣Pay)</h4>
+          <div class="sc-field"><span class="sc-label label-data">精算點亮點</span><span class="sc-text">滿 1,000 元就送 100 元 (等同10%高回饋)，且可享 9 期 0 利率。門檻極低期數長，小資資金壓力最小。(另台新新戶也有 10% 破盤回饋)。</span></div>
+        </div>
+
+        <h3 style="margin-top:25px;">🛡️ 攻防教戰守則與避雷清單</h3>
+        <div class="scenario-card">
+          <p><strong>⚔️ 攻防一：假高趴數，真低上限（針對上海商銀）</strong><br>
+          <span style="color:#DAA520;">「上海商銀 5.5% 上限嚴格卡在 500 元！繳 10 萬就封頂，看得到吃不到。遠銀 VIP 繳稅一次付清 0.35%，直接折抵帳單高達 10,000 元！」</span></p>
+        </div>
+        <div class="scenario-card">
+          <p><strong>⚔️ 攻防二：超長分期的「高額利息」陷阱（針對中信、富邦、國泰等）</strong><br>
+          <span style="color:#DAA520;">「超長分期隱藏高息：中信長天期 6.88%、國泰 18 期 6%、富邦超過 3 期即收息！遠銀滿 10 萬『無條件 6 期 0 利率』，不付半毛利息。」</span></p>
+        </div>
+        <div class="scenario-card">
+          <p><strong>⚔️ 攻防三：「臨時調額」的結帳地獄（同業通病）</strong><br>
+          <span style="color:#DAA520;">「請務必申請『永久額度』調升。如永豐、玉山、兆豐、台新等，臨調額度『完全無法參與分期』，結帳日會強制要求一次付清，這點務必提醒客戶！」</span></p>
         </div>
 
         <h2 class="section-title gold-glow" style="margin-top:30px;">🔗 【附錄】官方查證連結區</h2>
